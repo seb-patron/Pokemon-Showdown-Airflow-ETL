@@ -983,3 +983,43 @@ File Path                                            PID  Runtime      # DAGs   
 /opt/airflow/dags/pokemon_replay_etl/tasks.py        477  0.01s             0           1  0.09s           2025-04-03T20:04:47                       5
 /opt/airflow/dags/pokemon_replay_etl/constants.py    474  0.03s             0           0  0.08s           2025-04-03T20:04:47                       3
 ================================================================================
+[2025-04-03T20:05:48.513+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                            PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/pokemon_replay_etl_dag.py                                 1           0  0.26s           2025-04-03T20:05:20                      12
+/opt/airflow/dags/pokemon_replay_etl/tasks.py        492  0.01s             0           1  0.08s           2025-04-03T20:05:18                       5
+/opt/airflow/dags/pokemon_replay_etl/constants.py    489  0.03s             0           0  0.08s           2025-04-03T20:05:18                       3
+================================================================================
+[2025-04-03T20:06:19.033+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                          PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/pokemon_replay_etl_dag.py                                 1           0  0.19s           2025-04-03T20:05:50                      12
+/opt/airflow/dags/pokemon_replay_etl/tasks.py                               0           1  0.10s           2025-04-03T20:06:16                       5
+/opt/airflow/dags/pokemon_replay_etl/constants.py                           0           0  0.07s           2025-04-03T20:05:55                       3
+================================================================================
+[2025-04-03T20:06:49.508+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                          PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/pokemon_replay_etl_dag.py                                 1           0  0.47s           2025-04-03T20:06:48                      34
+/opt/airflow/dags/pokemon_replay_etl/tasks.py                               0           1  0.08s           2025-04-03T20:06:46                       5
+/opt/airflow/dags/pokemon_replay_etl/constants.py                           0           0  0.07s           2025-04-03T20:06:26                       3
+================================================================================
+[2025-04-03T20:07:19.801+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                            PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/pokemon_replay_etl_dag.py          549  0.01s             1           0  0.47s           2025-04-03T20:06:48                      34
+/opt/airflow/dags/pokemon_replay_etl/tasks.py                               0           1  0.10s           2025-04-03T20:07:16                       5
+/opt/airflow/dags/pokemon_replay_etl/constants.py                           0           0  0.08s           2025-04-03T20:06:56                       3
+================================================================================

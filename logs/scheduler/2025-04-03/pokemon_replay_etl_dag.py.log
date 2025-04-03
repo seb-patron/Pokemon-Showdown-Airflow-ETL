@@ -243,3 +243,38 @@
 [2025-04-03T20:05:20.395+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:05:20.394+0000] {dag.py:3239} INFO - Sync 1 DAGs
 [2025-04-03T20:05:20.447+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:05:20.447+0000] {dag.py:4180} INFO - Setting next_dagrun for pokemon_replay_etl to 2025-04-03 00:00:00+00:00, run_after=2025-04-04 00:00:00+00:00
 [2025-04-03T20:05:20.476+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl_dag.py took 0.220 seconds
+[2025-04-03T20:05:50.620+0000] {processor.py:186} INFO - Started process (PID=499) to work on /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:05:50.622+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl_dag.py for tasks to queue
+[2025-04-03T20:05:50.625+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:05:50.625+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:05:50.651+0000] {processor.py:925} INFO - DAG(s) 'pokemon_replay_etl' retrieved from /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:05:50.696+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:05:50.696+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-03T20:05:50.735+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:05:50.734+0000] {dag.py:4180} INFO - Setting next_dagrun for pokemon_replay_etl to 2025-04-03 00:00:00+00:00, run_after=2025-04-04 00:00:00+00:00
+[2025-04-03T20:05:50.767+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl_dag.py took 0.154 seconds
+[2025-04-03T20:06:21.090+0000] {processor.py:186} INFO - Started process (PID=514) to work on /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:06:21.092+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl_dag.py for tasks to queue
+[2025-04-03T20:06:21.094+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:06:21.094+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:06:21.134+0000] {processor.py:925} INFO - DAG(s) 'pokemon_replay_etl' retrieved from /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:06:21.173+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:06:21.173+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-03T20:06:21.198+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:06:21.198+0000] {dag.py:4180} INFO - Setting next_dagrun for pokemon_replay_etl to 2025-04-03 00:00:00+00:00, run_after=2025-04-04 00:00:00+00:00
+[2025-04-03T20:06:21.215+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl_dag.py took 0.134 seconds
+[2025-04-03T20:06:31.266+0000] {processor.py:186} INFO - Started process (PID=524) to work on /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:06:31.269+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl_dag.py for tasks to queue
+[2025-04-03T20:06:31.272+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:06:31.271+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:06:31.310+0000] {processor.py:925} INFO - DAG(s) 'pokemon_replay_etl' retrieved from /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:06:31.348+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:06:31.348+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-03T20:06:31.378+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:06:31.378+0000] {dag.py:4180} INFO - Setting next_dagrun for pokemon_replay_etl to 2025-04-03 00:00:00+00:00, run_after=2025-04-04 00:00:00+00:00
+[2025-04-03T20:06:31.399+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl_dag.py took 0.144 seconds
+[2025-04-03T20:06:48.461+0000] {processor.py:186} INFO - Started process (PID=534) to work on /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:06:48.463+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl_dag.py for tasks to queue
+[2025-04-03T20:06:48.465+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:06:48.465+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:06:48.504+0000] {processor.py:925} INFO - DAG(s) 'pokemon_replay_etl' retrieved from /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:06:48.841+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:06:48.840+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-03T20:06:48.864+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:06:48.864+0000] {dag.py:4180} INFO - Setting next_dagrun for pokemon_replay_etl to 2025-04-03 00:00:00+00:00, run_after=2025-04-04 00:00:00+00:00
+[2025-04-03T20:06:48.887+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl_dag.py took 0.436 seconds
+[2025-04-03T20:07:19.825+0000] {processor.py:186} INFO - Started process (PID=549) to work on /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:07:19.827+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl_dag.py for tasks to queue
+[2025-04-03T20:07:19.832+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:07:19.831+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:07:19.875+0000] {processor.py:925} INFO - DAG(s) 'pokemon_replay_etl' retrieved from /opt/airflow/dags/pokemon_replay_etl_dag.py
+[2025-04-03T20:07:19.945+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:07:19.944+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-03T20:07:19.994+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:07:19.994+0000] {dag.py:4180} INFO - Setting next_dagrun for pokemon_replay_etl to 2025-04-03 00:00:00+00:00, run_after=2025-04-04 00:00:00+00:00
+[2025-04-03T20:07:20.027+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl_dag.py took 0.214 seconds

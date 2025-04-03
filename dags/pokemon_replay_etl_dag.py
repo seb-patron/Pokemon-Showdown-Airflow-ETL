@@ -5,6 +5,7 @@ This DAG:
 1. Fetches replay IDs for a specified format
 2. Downloads replay data for each ID
 3. Retries any failed downloads
+4. Compacts daily replays into single files for easier analysis
 """
 from datetime import timedelta
 import pendulum
@@ -13,7 +14,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 
 from pokemon_replay_etl.constants import DEFAULT_FORMAT, DEFAULT_MAX_PAGES
-from pokemon_replay_etl.tasks import get_replay_ids, download_replays, retry_failed_replays
+from pokemon_replay_etl.tasks import get_replay_ids, download_replays, retry_failed_replays, compact_daily_replays
 
 # Define default DAG arguments
 default_args = {
@@ -60,5 +61,12 @@ with DAG(
         provide_context=True,
     )
     
+    # Task 4: Compact daily replays
+    compact_daily_replays_task = PythonOperator(
+        task_id='compact_daily_replays',
+        python_callable=compact_daily_replays,
+        provide_context=True,
+    )
+    
     # Define task dependencies
-    get_replay_ids_task >> download_replays_task >> retry_failed_replays_task 
+    get_replay_ids_task >> download_replays_task >> retry_failed_replays_task >> compact_daily_replays_task 

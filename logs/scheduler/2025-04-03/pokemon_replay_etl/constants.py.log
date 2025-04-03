@@ -178,3 +178,23 @@
 [2025-04-03T20:05:18.162+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:05:18.162+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/constants.py
 [2025-04-03T20:05:18.169+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/constants.py
 [2025-04-03T20:05:18.192+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/constants.py took 0.046 seconds
+[2025-04-03T20:05:48.517+0000] {processor.py:186} INFO - Started process (PID=489) to work on /opt/airflow/dags/pokemon_replay_etl/constants.py
+[2025-04-03T20:05:48.519+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/constants.py for tasks to queue
+[2025-04-03T20:05:48.522+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:05:48.521+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/constants.py
+[2025-04-03T20:05:48.531+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/constants.py
+[2025-04-03T20:05:48.557+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/constants.py took 0.053 seconds
+[2025-04-03T20:05:55.856+0000] {processor.py:186} INFO - Started process (PID=504) to work on /opt/airflow/dags/pokemon_replay_etl/constants.py
+[2025-04-03T20:05:55.858+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/constants.py for tasks to queue
+[2025-04-03T20:05:55.861+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:05:55.861+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/constants.py
+[2025-04-03T20:05:55.874+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/constants.py
+[2025-04-03T20:05:55.890+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/constants.py took 0.044 seconds
+[2025-04-03T20:06:26.212+0000] {processor.py:186} INFO - Started process (PID=519) to work on /opt/airflow/dags/pokemon_replay_etl/constants.py
+[2025-04-03T20:06:26.215+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/constants.py for tasks to queue
+[2025-04-03T20:06:26.217+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:06:26.217+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/constants.py
+[2025-04-03T20:06:26.225+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/constants.py
+[2025-04-03T20:06:26.242+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/constants.py took 0.043 seconds
+[2025-04-03T20:06:56.600+0000] {processor.py:186} INFO - Started process (PID=539) to work on /opt/airflow/dags/pokemon_replay_etl/constants.py
+[2025-04-03T20:06:56.610+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/constants.py for tasks to queue
+[2025-04-03T20:06:56.612+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:06:56.612+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/constants.py
+[2025-04-03T20:06:56.622+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/constants.py
+[2025-04-03T20:06:56.639+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/constants.py took 0.048 seconds

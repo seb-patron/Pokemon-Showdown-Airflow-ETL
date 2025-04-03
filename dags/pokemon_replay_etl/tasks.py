@@ -7,13 +7,15 @@ import json
 import traceback
 from datetime import datetime
 from typing import Dict, Any, List
+import glob
 
 from airflow.models import TaskInstance
 from airflow.exceptions import AirflowSkipException
 
 from .constants import (
     DEFAULT_FORMAT, DEFAULT_MAX_PAGES, REPLAYS_DIR, 
-    REPLAY_IDS_DIR, PROCESSED_IDS_DIR, FAILED_IDS_DIR
+    REPLAY_IDS_DIR, PROCESSED_IDS_DIR, FAILED_IDS_DIR,
+    COMPACTED_REPLAYS_DIR
 )
 from .state import load_state, save_state
 from .api import fetch_replay_page, fetch_replay_data
@@ -313,4 +315,71 @@ def retry_failed_replays(**context):
     logger.info(f"Retry summary: {stats['retried']} retried, {stats['recovered']} recovered, {stats['failed']} still failed")
     
     # Push stats to XCom
-    ti.xcom_push(key='retry_stats', value=stats) 
+    ti.xcom_push(key='retry_stats', value=stats)
+
+def compact_daily_replays(**context):
+    """
+    Airflow task to compact all replays for each date into a single JSON file.
+    This makes it easier to analyze and process the data in bulk.
+    
+    Creates files named like: format_YYYY-MM-DD_HHMMSS.json in the compacted_replays directory.
+    Each file contains an array of all replays for that date.
+    """
+    ti: TaskInstance = context['ti']
+    format_id = context['params'].get('format_id', DEFAULT_FORMAT)
+    
+    logger.info(f"Compacting daily replays for format: {format_id}")
+    
+    # Get the base directory for this format's replays
+    format_dir = os.path.join(REPLAYS_DIR, format_id)
+    
+    if not os.path.exists(format_dir):
+        logger.info(f"No replay directory found for format {format_id}")
+        return
+    
+    # Get all date directories (YYYY-MM-DD)
+    date_dirs = [d for d in os.listdir(format_dir) if os.path.isdir(os.path.join(format_dir, d))]
+    
+    if not date_dirs:
+        logger.info(f"No date directories found for format {format_id}")
+        return
+    
+    # Process each date directory
+    for date_str in date_dirs:
+        date_dir = os.path.join(format_dir, date_str)
+        replay_files = glob.glob(os.path.join(date_dir, "*.json"))
+        
+        if not replay_files:
+            logger.info(f"No replay files found for date {date_str}")
+            continue
+        
+        # Load all replays for this date
+        replays = []
+        for replay_file in replay_files:
+            try:
+                with open(replay_file, 'r') as f:
+                    replay_data = json.load(f)
+                    replays.append(replay_data)
+            except Exception as e:
+                logger.error(f"Error loading replay file {replay_file}: {e}")
+                continue
+        
+        if not replays:
+            logger.info(f"No valid replays found for date {date_str}")
+            continue
+        
+        # Create a timestamped filename for the compacted file
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        output_file = os.path.join(COMPACTED_REPLAYS_DIR, f"{format_id}_{date_str}_{timestamp}.json")
+        
+        # Save the compacted file
+        with open(output_file, 'w') as f:
+            json.dump(replays, f, indent=2)
+        
+        logger.info(f"Compacted {len(replays)} replays for {date_str} to {output_file}")
+    
+    # Log summary
+    logger.info(f"Compacting complete for format {format_id}, processed {len(date_dirs)} dates")
+    
+    # Push stats to XCom
+    ti.xcom_push(key='compact_stats', value={'dates_processed': len(date_dirs)}) 

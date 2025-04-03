@@ -19,6 +19,7 @@ from .constants import (
 )
 from .state import load_state, save_state
 from .api import fetch_replay_page, fetch_replay_data
+from .db import record_processing, get_unprocessed_replays, get_processing_status
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +27,7 @@ def get_replay_ids(**context):
     """
     Airflow task to fetch and save replay IDs for a format.
     Continues until it reaches the last processed ID or runs out of IDs.
+    Also records the fetched IDs in the metadata database.
     """
     ti: TaskInstance = context['ti']
     format_id = context['params'].get('format_id', DEFAULT_FORMAT)
@@ -45,7 +47,11 @@ def get_replay_ids(**context):
     before_ts = None
     done = False
     
-    output_file = os.path.join(REPLAY_IDS_DIR, f"{format_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
+    # Create format-specific directory for replay IDs
+    format_dir = os.path.join(REPLAY_IDS_DIR, format_id)
+    os.makedirs(format_dir, exist_ok=True)
+    
+    output_file = os.path.join(format_dir, f"{format_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
     
     try:
         while page < max_pages and not done:
@@ -88,6 +94,9 @@ def get_replay_ids(**context):
                     "format": format_id,
                     "players": rep.get("p1", "") + " vs " + rep.get("p2", "")
                 })
+                
+                # Record that we've discovered this replay ID in the database
+                record_processing(r_id, format_id, 'discovered', 'success', f"Discovered in page {page+1}")
             
             # Prepare for next page if needed
             if done or len(replays) < 51:  # 51 indicates more pages
@@ -124,7 +133,7 @@ def get_replay_ids(**context):
 def download_replays(**context):
     """
     Airflow task to download replays from the list of IDs.
-    Organizes replays by date and marks each ID as processed or failed.
+    Organizes replays by date and records processing status in the metadata database.
     """
     ti: TaskInstance = context['ti']
     format_id = context['params'].get('format_id', DEFAULT_FORMAT)
@@ -151,9 +160,6 @@ def download_replays(**context):
         "failed": 0
     }
     
-    processed_ids = []
-    failed_ids = []
-    
     for replay_info in replay_list:
         replay_id = replay_info["id"]
         logger.info(f"Downloading replay: {replay_id}")
@@ -164,8 +170,8 @@ def download_replays(**context):
             
             if not replay_data:
                 logger.error(f"Failed to download replay {replay_id}")
-                failed_ids.append(replay_info)
                 stats["failed"] += 1
+                record_processing(replay_id, format_id, 'downloaded', 'failed', 'Failed to download replay data')
                 continue
             
             # Create a directory for this replay based on the date
@@ -180,9 +186,9 @@ def download_replays(**context):
             with open(replay_file, 'w') as f:
                 json.dump(replay_data, f, indent=2)
             
-            # Mark as processed
-            processed_ids.append(replay_info)
+            # Mark as processed in the database
             stats["downloaded"] += 1
+            record_processing(replay_id, format_id, 'downloaded', 'success', replay_file)
             
             # Update the last processed ID in state
             state["last_processed_id"] = replay_id
@@ -190,23 +196,8 @@ def download_replays(**context):
         except Exception as e:
             logger.error(f"Error processing replay {replay_id}: {e}")
             logger.error(traceback.format_exc())
-            failed_ids.append(replay_info)
             stats["failed"] += 1
-    
-    # Save processed and failed IDs
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    
-    if processed_ids:
-        processed_file = os.path.join(PROCESSED_IDS_DIR, f"{format_id}_{timestamp}_processed.json")
-        with open(processed_file, 'w') as f:
-            json.dump(processed_ids, f, indent=2)
-        logger.info(f"Saved {len(processed_ids)} processed IDs to {processed_file}")
-    
-    if failed_ids:
-        failed_file = os.path.join(FAILED_IDS_DIR, f"{format_id}_{timestamp}_failed.json")
-        with open(failed_file, 'w') as f:
-            json.dump(failed_ids, f, indent=2)
-        logger.info(f"Saved {len(failed_ids)} failed IDs to {failed_file}")
+            record_processing(replay_id, format_id, 'downloaded', 'failed', str(e))
     
     # Save the updated state
     save_state(state, format_id)
@@ -220,21 +211,43 @@ def download_replays(**context):
 def retry_failed_replays(**context):
     """
     Airflow task to retry downloading failed replays.
+    Uses the metadata database to find failed downloads.
     """
     ti: TaskInstance = context['ti']
     format_id = context['params'].get('format_id', DEFAULT_FORMAT)
     
-    # Find all failed replay files for this format
-    failed_files = []
-    for filename in os.listdir(FAILED_IDS_DIR):
-        if filename.startswith(f"{format_id}_") and filename.endswith("_failed.json"):
-            failed_files.append(os.path.join(FAILED_IDS_DIR, filename))
+    # Query the database for failed downloads
+    conn = None
+    try:
+        from .db import get_db_connection
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Get replay IDs that failed in the download stage
+        cursor.execute('''
+        SELECT DISTINCT replay_id, details 
+        FROM replay_processing 
+        WHERE format_id = ? 
+        AND stage = 'downloaded' 
+        AND status = 'failed'
+        AND NOT EXISTS (
+            SELECT 1 FROM replay_processing 
+            WHERE replay_id = replay_processing.replay_id 
+            AND stage = 'downloaded' 
+            AND status = 'success'
+        )
+        ''', (format_id,))
+        
+        failed_replays = cursor.fetchall()
+    finally:
+        if conn:
+            conn.close()
     
-    if not failed_files:
+    if not failed_replays:
         logger.info(f"No failed replays to retry for format {format_id}")
         return
     
-    logger.info(f"Found {len(failed_files)} failed replay files to retry")
+    logger.info(f"Found {len(failed_replays)} failed replays to retry")
     
     # Load the current state
     state = load_state(format_id)
@@ -246,70 +259,66 @@ def retry_failed_replays(**context):
         "failed": 0
     }
     
-    recovered_ids = []
-    still_failed_ids = []
-    
-    # Process each failed file
-    for failed_file in failed_files:
-        with open(failed_file, 'r') as f:
-            failed_replays = json.load(f)
+    # We need additional details for each replay - query the first discovery of each
+    for replay_data in failed_replays:
+        replay_id = replay_data['replay_id']
+        stats["retried"] += 1
         
-        logger.info(f"Retrying {len(failed_replays)} failed replays from {failed_file}")
-        stats["retried"] += len(failed_replays)
-        
-        for replay_info in failed_replays:
-            replay_id = replay_info["id"]
+        # Get additional info needed to download
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute('''
+            SELECT details FROM replay_processing 
+            WHERE replay_id = ? AND stage = 'discovered' AND status = 'success'
+            LIMIT 1
+            ''', (replay_id,))
+            discovery = cursor.fetchone()
+            
+            if not discovery:
+                logger.error(f"No discovery info found for replay {replay_id}")
+                stats["failed"] += 1
+                continue
+                
+            # Get info about this replay from the database or API
             logger.info(f"Retrying download of replay: {replay_id}")
             
-            try:
-                # Fetch the replay data
-                replay_data = fetch_replay_data(replay_id)
-                
-                if not replay_data:
-                    logger.error(f"Failed to download replay {replay_id} on retry")
-                    still_failed_ids.append(replay_info)
-                    stats["failed"] += 1
-                    continue
-                
-                # Create a directory for this replay based on the date
-                upload_time = datetime.fromtimestamp(replay_info["uploadtime"])
-                date_str = upload_time.strftime("%Y-%m-%d")
-                format_dir = os.path.join(REPLAYS_DIR, format_id)
-                date_dir = os.path.join(format_dir, date_str)
-                os.makedirs(date_dir, exist_ok=True)
-                
-                # Save the replay data
-                replay_file = os.path.join(date_dir, f"{replay_id}.json")
-                with open(replay_file, 'w') as f:
-                    json.dump(replay_data, f, indent=2)
-                
-                # Mark as recovered
-                recovered_ids.append(replay_info)
-                stats["recovered"] += 1
-                
-            except Exception as e:
-                logger.error(f"Error retrying replay {replay_id}: {e}")
-                logger.error(traceback.format_exc())
-                still_failed_ids.append(replay_info)
+            # Fetch the replay data
+            replay_data = fetch_replay_data(replay_id)
+            
+            if not replay_data:
+                logger.error(f"Failed to download replay {replay_id} on retry")
                 stats["failed"] += 1
-        
-        # Delete the processed failed file
-        os.remove(failed_file)
-    
-    # Save recovered and still-failed IDs
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    
-    if recovered_ids:
-        recovered_file = os.path.join(PROCESSED_IDS_DIR, f"{format_id}_{timestamp}_recovered.json")
-        with open(recovered_file, 'w') as f:
-            json.dump(recovered_ids, f, indent=2)
-        logger.info(f"Saved {len(recovered_ids)} recovered IDs to {recovered_file}")
-    
-    if still_failed_ids:
-        still_failed_file = os.path.join(FAILED_IDS_DIR, f"{format_id}_{timestamp}_failed.json")
-        with open(still_failed_file, 'w') as f:
-            json.dump(still_failed_ids, f, indent=2)
-        logger.info(f"Saved {len(still_failed_ids)} still-failed IDs to {still_failed_file}")
+                record_processing(replay_id, format_id, 'retry', 'failed', 'Failed to download replay data on retry')
+                continue
+            
+            # Since we don't have upload time stored, use current date
+            # In a real solution, we would store more metadata in the database
+            date_str = datetime.now().strftime("%Y-%m-%d")
+            format_dir = os.path.join(REPLAYS_DIR, format_id)
+            date_dir = os.path.join(format_dir, date_str)
+            os.makedirs(date_dir, exist_ok=True)
+            
+            # Save the replay data
+            replay_file = os.path.join(date_dir, f"{replay_id}.json")
+            with open(replay_file, 'w') as f:
+                json.dump(replay_data, f, indent=2)
+            
+            # Mark as recovered
+            stats["recovered"] += 1
+            
+            # Record in the metadata database
+            record_processing(replay_id, format_id, 'downloaded', 'success', replay_file)
+            record_processing(replay_id, format_id, 'retry', 'success', 'Successfully recovered on retry')
+            
+        except Exception as e:
+            logger.error(f"Error retrying replay {replay_id}: {e}")
+            logger.error(traceback.format_exc())
+            stats["failed"] += 1
+            record_processing(replay_id, format_id, 'retry', 'failed', str(e))
+        finally:
+            if conn:
+                conn.close()
     
     # Log summary
     logger.info(f"Retry summary: {stats['retried']} retried, {stats['recovered']} recovered, {stats['failed']} still failed")
@@ -324,6 +333,8 @@ def compact_daily_replays(**context):
     
     Creates files named like: format_YYYY-MM-DD_HHMMSS.json in the compacted_replays directory.
     Each file contains an array of all replays for that date.
+    
+    Uses the metadata database to track which replays have been compacted to avoid duplicates.
     """
     ti: TaskInstance = context['ti']
     format_id = context['params'].get('format_id', DEFAULT_FORMAT)
@@ -344,7 +355,23 @@ def compact_daily_replays(**context):
         logger.info(f"No date directories found for format {format_id}")
         return
     
+    # Get replay IDs that haven't been compacted yet
+    uncompacted_replay_ids = get_unprocessed_replays(format_id, 'compacted')
+    
+    if not uncompacted_replay_ids:
+        logger.info(f"No new replays to compact for format {format_id}")
+        return
+        
+    logger.info(f"Found {len(uncompacted_replay_ids)} uncompacted replays for format {format_id}")
+    
+    # Create format-specific directory for compacted replays
+    compacted_format_dir = os.path.join(COMPACTED_REPLAYS_DIR, format_id)
+    os.makedirs(compacted_format_dir, exist_ok=True)
+    
     # Process each date directory
+    compacted_by_date = {}
+    total_compacted = 0
+    
     for date_str in date_dirs:
         date_dir = os.path.join(format_dir, date_str)
         replay_files = glob.glob(os.path.join(date_dir, "*.json"))
@@ -353,33 +380,76 @@ def compact_daily_replays(**context):
             logger.info(f"No replay files found for date {date_str}")
             continue
         
-        # Load all replays for this date
-        replays = []
+        # Load replays that haven't been compacted yet
+        new_replays = []
         for replay_file in replay_files:
-            try:
-                with open(replay_file, 'r') as f:
-                    replay_data = json.load(f)
-                    replays.append(replay_data)
-            except Exception as e:
-                logger.error(f"Error loading replay file {replay_file}: {e}")
-                continue
+            # Extract replay_id from filename (e.g., "gen9vgc2024regh-2273103153.json")
+            replay_id = os.path.basename(replay_file).split('.')[0]
+            
+            # Only process replays that haven't been compacted yet
+            if replay_id in uncompacted_replay_ids:
+                try:
+                    with open(replay_file, 'r') as f:
+                        replay_data = json.load(f)
+                        new_replays.append(replay_data)
+                        
+                    # Record successful compaction
+                    record_processing(replay_id, format_id, 'compacted', 'success', f"Compacted in {date_str}")
+                except Exception as e:
+                    logger.error(f"Error loading replay file {replay_file}: {e}")
+                    record_processing(replay_id, format_id, 'compacted', 'failed', str(e))
+                    continue
         
-        if not replays:
-            logger.info(f"No valid replays found for date {date_str}")
+        if not new_replays:
+            logger.info(f"No new replays to compact for date {date_str}")
             continue
         
-        # Create a timestamped filename for the compacted file
+        # Check if we already have existing compacted data for this date
+        existing_compacted_files = glob.glob(os.path.join(compacted_format_dir, f"{date_str}_*.json"))
+        existing_replays = []
+        
+        if existing_compacted_files:
+            # Load the most recent compacted file
+            latest_file = max(existing_compacted_files)
+            try:
+                with open(latest_file, 'r') as f:
+                    existing_replays = json.load(f)
+                logger.info(f"Loaded {len(existing_replays)} existing replays from {latest_file}")
+            except Exception as e:
+                logger.error(f"Error loading existing compacted file {latest_file}: {e}")
+        
+        # Merge existing and new replays
+        all_replays = existing_replays + new_replays
+        
+        # Create a timestamped filename for the new compacted file
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        output_file = os.path.join(COMPACTED_REPLAYS_DIR, f"{format_id}_{date_str}_{timestamp}.json")
+        output_file = os.path.join(compacted_format_dir, f"{date_str}_{timestamp}.json")
         
         # Save the compacted file
         with open(output_file, 'w') as f:
-            json.dump(replays, f, indent=2)
+            json.dump(all_replays, f, indent=2)
         
-        logger.info(f"Compacted {len(replays)} replays for {date_str} to {output_file}")
+        logger.info(f"Compacted {len(new_replays)} new replays (total: {len(all_replays)}) for {date_str} to {output_file}")
+        
+        compacted_by_date[date_str] = len(new_replays)
+        total_compacted += len(new_replays)
     
     # Log summary
-    logger.info(f"Compacting complete for format {format_id}, processed {len(date_dirs)} dates")
-    
-    # Push stats to XCom
-    ti.xcom_push(key='compact_stats', value={'dates_processed': len(date_dirs)}) 
+    if total_compacted > 0:
+        logger.info(f"Compacting complete for format {format_id}. Compacted {total_compacted} new replays across {len(compacted_by_date)} dates")
+        
+        # Push stats to XCom
+        ti.xcom_push(key='compact_stats', value={
+            'dates_processed': len(compacted_by_date),
+            'replays_compacted': total_compacted,
+            'by_date': compacted_by_date
+        })
+    else:
+        logger.info(f"No new replays compacted for format {format_id}")
+        
+        # Push empty stats to XCom
+        ti.xcom_push(key='compact_stats', value={
+            'dates_processed': 0,
+            'replays_compacted': 0,
+            'by_date': {}
+        }) 

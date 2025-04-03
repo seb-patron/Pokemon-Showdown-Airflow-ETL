@@ -1,0 +1,15 @@
+{
+  "id": "gen9vgc2024regh-2273165024",
+  "format": "[Gen 9] VGC 2024 Reg H",
+  "players": [
+    "syll0g1sm",
+    "timoaaaaa"
+  ],
+  "log": "|j|\u2606syll0g1sm\n|j|\u2606timoaaaaa\n|t:|1735743538\n|gametype|doubles\n|player|p1|syll0g1sm|1|1326\n|player|p2|timoaaaaa|170|1362\n|teamsize|p1|6\n|teamsize|p2|6\n|gen|9\n|tier|[Gen 9] VGC 2024 Reg H\n|rated|\n|rule|Species Clause: Limit one of each Pok\u00e9mon\n|rule|Item Clause: Limit 1 of each item\n|clearpoke\n|poke|p1|Ursaluna, L50, M|\n|poke|p1|Exeggutor-Alola, L50, M|\n|poke|p1|Torkoal, L50, F|\n|poke|p1|Lilligant-Hisui, L50, F|\n|poke|p1|Sableye, L50, F|\n|poke|p1|Gallade, L50, M|\n|poke|p2|Metagross, L50|\n|poke|p2|Incineroar, L50, M|\n|poke|p2|Ursaluna-Bloodmoon, L50, M|\n|poke|p2|Amoonguss, L50, M|\n|poke|p2|Dragonite, L50, F|\n|poke|p2|Whimsicott, L50, M|\n|teampreview|4\n|\n|t:|1735743563\n|start\n|switch|p1a: Sableye|Sableye, L50, F|100/100\n|switch|p1b: Exeggutor|Exeggutor-Alola, L50, M|100/100\n|switch|p2a: Incineroar|Incineroar, L50, M|100/100\n|switch|p2b: Dragonite|Dragonite, L50, F|100/100\n|-ability|p2a: Incineroar|Intimidate|boost\n|-unboost|p1a: Sableye|atk|1\n|-unboost|p1b: Exeggutor|atk|1\n|turn|1\n|\n|t:|1735743595\n|move|p1b: Exeggutor|Protect|p1b: Exeggutor\n|-singleturn|p1b: Exeggutor|Protect\n|move|p2a: Incineroar|Fake Out|p1b: Exeggutor\n|-activate|p1b: Exeggutor|move: Protect\n|move|p1a: Sableye|Light Screen|p1a: Sableye\n|-sidestart|p1: syll0g1sm|move: Light Screen\n|move|p2b: Dragonite|Scale Shot|p1b: Exeggutor\n|-activate|p1b: Exeggutor|move: Protect\n|\n|upkeep\n|turn|2\n|\n|t:|1735743635\n|move|p1a: Sableye|Encore|p2a: Incineroar\n|-hint|Since gen 7, Dark is immune to Prankster moves.\n|-immune|p2a: Incineroar\n|move|p2b: Dragonite|Scale Shot|p1b: Exeggutor\n|-supereffective|p1b: Exeggutor\n|-damage|p1b: Exeggutor|71/100\n|-supereffective|p1b: Exeggutor\n|-damage|p1b: Exeggutor|46/100\n|-enditem|p1b: Exeggutor|Sitrus Berry|[eat]\n|-heal|p1b: Exeggutor|71/100|[from] item: Sitrus Berry\n|-supereffective|p1b: Exeggutor\n|-damage|p1b: Exeggutor|46/100\n|-supereffective|p1b: Exeggutor\n|-damage|p1b: Exeggutor|19/100\n|-supereffective|p1b: Exeggutor\n|-crit|p1b: Exeggutor\n|-damage|p1b: Exeggutor|0 fnt\n|faint|p1b: Exeggutor\n|-hitcount|p1: Exeggutor|5\n|-unboost|p2b: Dragonite|def|1\n|-boost|p2b: Dragonite|spe|1\n|move|p2a: Incineroar|Knock Off|p1a: Sableye\n|-damage|p1a: Sableye|60/100\n|-enditem|p1a: Sableye|Eject Button|[from] move: Knock Off|[of] p2a: Incineroar\n|\n|upkeep\n|-message|syll0g1sm forfeited.\n|\n|win|timoaaaaa\n|raw|syll0g1sm's rating: 1326 &rarr; <strong>1308</strong><br />(-18 for losing)\n|raw|timoaaaaa's rating: 1362 &rarr; <strong>1380</strong><br />(+18 for winning)\n|l|\u2606syll0g1sm\n|player|p1|\n|l|\u2606timoaaaaa\n|player|p2|\n",
+  "uploadtime": 1735744043,
+  "views": 128,
+  "formatid": "gen9vgc2024regh",
+  "rating": 1308,
+  "private": 0,
+  "password": null
+}

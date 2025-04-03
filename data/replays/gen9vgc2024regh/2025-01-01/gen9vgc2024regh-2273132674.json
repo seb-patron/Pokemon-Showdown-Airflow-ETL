@@ -1,0 +1,15 @@
+{
+  "id": "gen9vgc2024regh-2273132674",
+  "format": "[Gen 9] VGC 2024 Reg H",
+  "players": [
+    "fivionxito",
+    "owenggg"
+  ],
+  "log": "|j|\u2606fivionxito\n|j|\u2606owenggg\n|t:|1735737500\n|gametype|doubles\n|player|p1|fivionxito|hilbert|1084\n|player|p2|owenggg|shadowtriad|1118\n|teamsize|p1|6\n|teamsize|p2|6\n|gen|9\n|tier|[Gen 9] VGC 2024 Reg H\n|rated|\n|rule|Species Clause: Limit one of each Pok\u00e9mon\n|rule|Item Clause: Limit 1 of each item\n|clearpoke\n|poke|p1|Veluza, L50, F|\n|poke|p1|Ceruledge, L50, M|\n|poke|p1|Serperior, L50, M|\n|poke|p1|Klefki, L50, M|\n|poke|p1|Dachsbun, L50, M|\n|poke|p1|Espathra, L50, F|\n|poke|p2|Murkrow, L50, F|\n|poke|p2|Incineroar, L50, M|\n|poke|p2|Ursaluna, L50, F|\n|poke|p2|Clefairy, L50, F|\n|poke|p2|Typhlosion-Hisui, L50, F|\n|poke|p2|Torkoal, L50, F|\n|teampreview|4\n|inactive|Battle timer is ON: inactive players will automatically lose when time's up. (requested by owenggg)\n|\n|t:|1735737534\n|start\n|switch|p1a: Veluza|Veluza, L50, F, shiny|100/100\n|switch|p1b: Ceruledge|Ceruledge, L50, M, shiny|100/100\n|switch|p2a: Murkrow|Murkrow, L50, F|100/100\n|switch|p2b: Incineroar|Incineroar, L50, M, shiny|100/100\n|-ability|p1a: Veluza|Mold Breaker\n|-ability|p2b: Incineroar|Intimidate|boost\n|-unboost|p1a: Veluza|atk|1\n|-fail|p1b: Ceruledge|unboost|[from] item: Clear Amulet|[of] p1b: Ceruledge\n|turn|1\n|\n|t:|1735737558\n|-terastallize|p1a: Veluza|Ghost\n|move|p2b: Incineroar|Fake Out|p1a: Veluza\n|-immune|p1a: Veluza\n|move|p2a: Murkrow|Tailwind|p2a: Murkrow\n|-sidestart|p2: owenggg|move: Tailwind\n|move|p1a: Veluza|Final Gambit|p2b: Incineroar\n|-damage|p2b: Incineroar|0 fnt\n|faint|p1a: Veluza\n|faint|p2b: Incineroar\n|move|p1b: Ceruledge|Bulk Up|p1b: Ceruledge\n|-boost|p1b: Ceruledge|atk|1\n|-boost|p1b: Ceruledge|def|1\n|\n|upkeep\n|\n|t:|1735737575\n|switch|p1a: Klefki|Klefki, L50, M, shiny|100/100\n|switch|p2b: Typhlosion|Typhlosion-Hisui, L50, F|100/100\n|turn|2\n|\n|t:|1735737585\n|switch|p2a: Torkoal|Torkoal, L50, F|100/100\n|-weather|SunnyDay|[from] ability: Drought|[of] p2a: Torkoal\n|switch|p1a: Dachsbun|Dachsbun, L50, M, shiny|100/100\n|-terastallize|p2b: Typhlosion|Fire\n|move|p1b: Ceruledge|Shadow Sneak|p2b: Typhlosion\n|-damage|p2b: Typhlosion|62/100\n|move|p2b: Typhlosion|Eruption|p1b: Ceruledge|[spread] \n|-ability|p1a: Dachsbun|Well-Baked Body|boost\n|-boost|p1a: Dachsbun|def|2\n|-start|p1b: Ceruledge|ability: Flash Fire\n|\n|-weather|SunnyDay|[upkeep]\n|upkeep\n|turn|3\n|-message|owenggg forfeited.\n|\n|win|fivionxito\n|raw|fivionxito's rating: 1084 &rarr; <strong>1114</strong><br />(+30 for winning)\n|raw|owenggg's rating: 1118 &rarr; <strong>1091</strong><br />(-27 for losing)\n|l|\u2606owenggg\n|player|p2|\n|l|\u2606fivionxito\n|player|p1|\n",
+  "uploadtime": 1735737951,
+  "views": 10,
+  "formatid": "gen9vgc2024regh",
+  "rating": 1091,
+  "private": 0,
+  "password": null
+}

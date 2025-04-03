@@ -1,0 +1,490 @@
+[2025-04-03T19:47:49.235+0000] {processor.py:186} INFO - Started process (PID=670) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:47:49.237+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:47:49.240+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:47:49.239+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:47:49.254+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:47:49.248+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:47:49.255+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:47:49.287+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.062 seconds
+[2025-04-03T19:48:19.726+0000] {processor.py:186} INFO - Started process (PID=687) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:48:19.728+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:48:19.731+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:48:19.731+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:48:19.746+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:48:19.743+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:48:19.748+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:48:19.777+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.062 seconds
+[2025-04-03T19:48:24.947+0000] {processor.py:186} INFO - Started process (PID=702) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:48:24.949+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:48:24.952+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:48:24.951+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:48:24.971+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:48:24.970+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:48:24.972+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:48:24.994+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.056 seconds
+[2025-04-03T19:48:55.427+0000] {processor.py:186} INFO - Started process (PID=722) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:48:55.430+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:48:55.433+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:48:55.433+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:48:55.446+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:48:55.444+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:48:55.447+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:48:55.483+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.067 seconds
+[2025-04-03T19:49:25.853+0000] {processor.py:186} INFO - Started process (PID=745) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:49:25.855+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:49:25.857+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:49:25.857+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:49:25.864+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:49:25.862+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:49:25.865+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:49:25.887+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.042 seconds
+[2025-04-03T19:49:56.237+0000] {processor.py:186} INFO - Started process (PID=779) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:49:56.240+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:49:56.243+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:49:56.242+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:49:56.253+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:49:56.251+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:49:56.255+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:49:56.360+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.135 seconds
+[2025-04-03T19:50:26.582+0000] {processor.py:186} INFO - Started process (PID=799) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:50:26.584+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:50:26.587+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:50:26.586+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:50:26.595+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:50:26.593+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:50:26.596+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:50:26.619+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.046 seconds
+[2025-04-03T19:50:56.948+0000] {processor.py:186} INFO - Started process (PID=825) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:50:56.950+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:50:56.953+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:50:56.952+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:50:56.961+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:50:56.959+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:50:56.961+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:50:56.982+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.043 seconds
+[2025-04-03T19:51:27.397+0000] {processor.py:186} INFO - Started process (PID=845) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:51:27.399+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:51:27.401+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:51:27.401+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:51:27.409+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:51:27.407+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:51:27.410+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:51:27.430+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.043 seconds
+[2025-04-03T19:51:57.742+0000] {processor.py:186} INFO - Started process (PID=865) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:51:57.744+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:51:57.746+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:51:57.746+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:51:57.758+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:51:57.755+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:51:57.759+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:51:57.786+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.056 seconds
+[2025-04-03T19:52:28.337+0000] {processor.py:186} INFO - Started process (PID=885) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:52:28.340+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:52:28.343+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:52:28.342+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:52:28.351+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:52:28.349+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:52:28.352+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:52:28.378+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.051 seconds
+[2025-04-03T19:52:58.888+0000] {processor.py:186} INFO - Started process (PID=905) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:52:58.891+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:52:58.894+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:52:58.893+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:52:58.903+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:52:58.901+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:52:58.905+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:52:58.931+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.053 seconds
+[2025-04-03T19:53:29.584+0000] {processor.py:186} INFO - Started process (PID=925) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:53:29.587+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:53:29.590+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:53:29.590+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:53:29.599+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:53:29.597+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:53:29.600+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:53:29.623+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.049 seconds
+[2025-04-03T19:54:00.011+0000] {processor.py:186} INFO - Started process (PID=963) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:54:00.014+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:54:00.017+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:54:00.016+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:54:00.027+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:54:00.024+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:54:00.028+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:54:00.055+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.057 seconds
+[2025-04-03T19:54:30.226+0000] {processor.py:186} INFO - Started process (PID=1008) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:54:30.228+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:54:30.231+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:54:30.230+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:54:30.239+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:54:30.237+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:54:30.241+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:54:30.266+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.051 seconds
+[2025-04-03T19:55:00.692+0000] {processor.py:186} INFO - Started process (PID=1035) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:55:00.694+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:55:00.697+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:55:00.696+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:55:00.705+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:55:00.703+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:55:00.705+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:55:00.728+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.046 seconds
+[2025-04-03T19:55:31.146+0000] {processor.py:186} INFO - Started process (PID=1073) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:55:31.149+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:55:31.151+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:55:31.151+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:55:31.167+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:55:31.164+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:55:31.168+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:55:31.204+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.070 seconds
+[2025-04-03T19:56:01.778+0000] {processor.py:186} INFO - Started process (PID=1093) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:56:01.781+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:56:01.783+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:56:01.782+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:56:01.791+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:56:01.789+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:56:01.792+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:56:01.812+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.044 seconds
+[2025-04-03T19:56:32.220+0000] {processor.py:186} INFO - Started process (PID=1119) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:56:32.222+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:56:32.224+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:56:32.224+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:56:32.232+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:56:32.230+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:56:32.232+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:56:32.254+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.043 seconds
+[2025-04-03T19:57:41.680+0000] {processor.py:186} INFO - Started process (PID=204) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:57:41.684+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:57:41.689+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:57:41.688+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:57:41.704+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:57:41.700+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:57:41.706+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:57:41.743+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.079 seconds
+[2025-04-03T19:58:12.092+0000] {processor.py:186} INFO - Started process (PID=229) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:58:12.094+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:58:12.099+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:58:12.098+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:58:12.113+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:58:12.110+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:58:12.115+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:58:12.216+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.136 seconds
+[2025-04-03T19:58:42.741+0000] {processor.py:186} INFO - Started process (PID=252) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:58:42.749+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:58:42.760+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:58:42.759+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:58:42.774+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:58:42.771+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:58:42.777+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:58:42.837+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.108 seconds
+[2025-04-03T19:59:13.585+0000] {processor.py:186} INFO - Started process (PID=272) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:59:13.586+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:59:13.590+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:59:13.589+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:59:13.597+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:59:13.595+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:59:13.598+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:59:13.621+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.046 seconds
+[2025-04-03T19:59:44.016+0000] {processor.py:186} INFO - Started process (PID=292) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:59:44.018+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T19:59:44.021+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:59:44.021+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:59:44.031+0000] {logging_mixin.py:190} INFO - [2025-04-03T19:59:44.029+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T19:59:44.032+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T19:59:44.058+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.051 seconds
+[2025-04-03T20:00:14.404+0000] {processor.py:186} INFO - Started process (PID=312) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:00:14.407+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T20:00:14.414+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:00:14.413+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:00:14.434+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:00:14.430+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T20:00:14.436+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:00:14.493+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.112 seconds
+[2025-04-03T20:00:44.980+0000] {processor.py:186} INFO - Started process (PID=332) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:00:44.983+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T20:00:44.987+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:00:44.987+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:00:44.997+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:00:44.995+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T20:00:44.998+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:00:45.028+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.058 seconds
+[2025-04-03T20:01:15.501+0000] {processor.py:186} INFO - Started process (PID=357) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:01:15.503+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T20:01:15.505+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:01:15.504+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:01:15.512+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:01:15.510+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T20:01:15.513+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:01:15.534+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.042 seconds
+[2025-04-03T20:01:45.791+0000] {processor.py:186} INFO - Started process (PID=372) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:01:45.793+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T20:01:45.795+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:01:45.794+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:01:45.802+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:01:45.800+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T20:01:45.803+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:01:45.824+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.043 seconds
+[2025-04-03T20:02:16.080+0000] {processor.py:186} INFO - Started process (PID=387) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:02:16.082+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T20:02:16.084+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:02:16.084+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:02:16.092+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:02:16.090+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T20:02:16.093+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:02:16.114+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.043 seconds
+[2025-04-03T20:02:46.464+0000] {processor.py:186} INFO - Started process (PID=402) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:02:46.466+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T20:02:46.468+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:02:46.468+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:02:46.479+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:02:46.477+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T20:02:46.480+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:02:46.509+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.057 seconds
+[2025-04-03T20:03:16.818+0000] {processor.py:186} INFO - Started process (PID=417) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:03:16.821+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T20:03:16.824+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:03:16.823+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:03:16.841+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:03:16.837+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T20:03:16.843+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:03:16.889+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.083 seconds
+[2025-04-03T20:03:47.167+0000] {processor.py:186} INFO - Started process (PID=432) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:03:47.171+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T20:03:47.177+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:03:47.176+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:03:47.201+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:03:47.196+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T20:03:47.203+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:03:47.259+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.117 seconds
+[2025-04-03T20:04:17.530+0000] {processor.py:186} INFO - Started process (PID=447) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:04:17.532+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T20:04:17.534+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:04:17.534+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:04:17.545+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:04:17.543+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T20:04:17.546+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:04:17.575+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.059 seconds
+[2025-04-03T20:04:47.861+0000] {processor.py:186} INFO - Started process (PID=462) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:04:47.863+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T20:04:47.866+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:04:47.865+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:04:47.876+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:04:47.874+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T20:04:47.877+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:04:47.903+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.054 seconds
+[2025-04-03T20:05:18.173+0000] {processor.py:186} INFO - Started process (PID=477) to work on /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:05:18.175+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/pokemon_replay_etl/tasks.py for tasks to queue
+[2025-04-03T20:05:18.177+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:05:18.177+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:05:18.185+0000] {logging_mixin.py:190} INFO - [2025-04-03T20:05:18.183+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/pokemon_replay_etl/tasks.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/opt/airflow/dags/pokemon_replay_etl/tasks.py", line 14, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package
+[2025-04-03T20:05:18.187+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/pokemon_replay_etl/tasks.py
+[2025-04-03T20:05:18.213+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/pokemon_replay_etl/tasks.py took 0.050 seconds

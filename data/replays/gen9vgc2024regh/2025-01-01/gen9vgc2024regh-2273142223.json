@@ -1,0 +1,15 @@
+{
+  "id": "gen9vgc2024regh-2273142223",
+  "format": "[Gen 9] VGC 2024 Reg H",
+  "players": [
+    "redbrood",
+    "Acco27"
+  ],
+  "log": "|j|\u2606redbrood\n|j|\u2606Acco27\n|t:|1735739414\n|gametype|doubles\n|player|p1|redbrood|266|1341\n|player|p2|Acco27|170|1450\n|teamsize|p1|6\n|teamsize|p2|6\n|gen|9\n|tier|[Gen 9] VGC 2024 Reg H\n|rated|\n|rule|Species Clause: Limit one of each Pok\u00e9mon\n|rule|Item Clause: Limit 1 of each item\n|clearpoke\n|poke|p1|Grimmsnarl, L50, M|\n|poke|p1|Volcarona, L50, F|\n|poke|p1|Oricorio-Sensu, L50, F|\n|poke|p1|Incineroar, L50, M|\n|poke|p1|Archaludon, L50, M|\n|poke|p1|Politoed, L50, M|\n|poke|p2|Pelipper, L50, M|\n|poke|p2|Basculegion, L50, M|\n|poke|p2|Archaludon, L50, M|\n|poke|p2|Electabuzz, L50, M|\n|poke|p2|Rillaboom, L50, M|\n|poke|p2|Incineroar, L50, M|\n|teampreview|4\n|\n|t:|1735739442\n|start\n|switch|p1a: Grimmsnarl|Grimmsnarl, L50, M|100/100\n|switch|p1b: Volcarona|Volcarona, L50, F|100/100\n|switch|p2a: Electabuzz|Electabuzz, L50, M|100/100\n|switch|p2b: Archaludon|Archaludon, L50, M|100/100\n|turn|1\n|inactive|Battle timer is ON: inactive players will automatically lose when time's up. (requested by redbrood)\n|inactive|Acco27 has 60 seconds left.\n|\n|t:|1735739482\n|switch|p2b: Basculegion|Basculegion, L50, M, shiny|100/100\n|move|p1a: Grimmsnarl|Fake Out|p2a: Electabuzz\n|-damage|p2a: Electabuzz|92/100\n|cant|p2a: Electabuzz|flinch\n|move|p1b: Volcarona|Quiver Dance|p1b: Volcarona\n|-boost|p1b: Volcarona|spa|1\n|-boost|p1b: Volcarona|spd|1\n|-boost|p1b: Volcarona|spe|1\n|\n|upkeep\n|turn|2\n|\n|t:|1735739501\n|switch|p2a: Pelipper|Pelipper, L50, M|100/100\n|-weather|RainDance|[from] ability: Drizzle|[of] p2a: Pelipper\n|-terastallize|p1b: Volcarona|Grass\n|move|p1a: Grimmsnarl|Reflect|p1a: Grimmsnarl\n|-sidestart|p1: redbrood|Reflect\n|move|p2b: Basculegion|Wave Crash|p1b: Volcarona\n|-resisted|p1b: Volcarona\n|-damage|p1b: Volcarona|58/100\n|-status|p2b: Basculegion|brn|[from] ability: Flame Body|[of] p1b: Volcarona\n|-damage|p2b: Basculegion|88/100 brn|[from] Recoil\n|move|p1b: Volcarona|Quiver Dance|p1b: Volcarona\n|-boost|p1b: Volcarona|spa|1\n|-boost|p1b: Volcarona|spd|1\n|-boost|p1b: Volcarona|spe|1\n|\n|-weather|RainDance|[upkeep]\n|-heal|p1b: Volcarona|65/100|[from] item: Leftovers\n|-damage|p2b: Basculegion|82/100 brn|[from] brn\n|upkeep\n|turn|3\n|l|\u2606Acco27\n|inactive|Acco27 disconnected and has a minute to reconnect!\n|player|p2|\n|inactive|Acco27 has 30 seconds left.\n|inactive|Acco27 has 20 seconds left.\n|inactive|Acco27 has 15 seconds left.\n|inactive|Acco27 has 10 seconds left.\n|inactive|Acco27 has 5 seconds left.\n|-message|Acco27 lost due to inactivity.\n|\n|win|redbrood\n|raw|redbrood's rating: 1341 &rarr; <strong>1367</strong><br />(+26 for winning)\n|raw|Acco27's rating: 1450 &rarr; <strong>1424</strong><br />(-26 for losing)\n|l|\u2606redbrood\n|player|p1|\n",
+  "uploadtime": 1735739889,
+  "views": 11,
+  "formatid": "gen9vgc2024regh",
+  "rating": 1367,
+  "private": 0,
+  "password": null
+}

@@ -1,0 +1,15 @@
+{
+  "id": "gen9vgc2024regh-2273213586",
+  "format": "[Gen 9] VGC 2024 Reg H",
+  "players": [
+    "Aditya1",
+    "Shadowknight16"
+  ],
+  "log": "|j|\u2606Aditya1\n|j|\u2606Shadowknight16\n|t:|1735750939\n|gametype|doubles\n|player|p1|Aditya1|101|1078\n|player|p2|Shadowknight16|102|1127\n|teamsize|p1|6\n|teamsize|p2|6\n|gen|9\n|tier|[Gen 9] VGC 2024 Reg H\n|rated|\n|rule|Species Clause: Limit one of each Pok\u00e9mon\n|rule|Item Clause: Limit 1 of each item\n|clearpoke\n|poke|p1|Annihilape, L50, M|\n|poke|p1|Ninetales-Alola, L50, F|\n|poke|p1|Talonflame, L50, M|\n|poke|p1|Garchomp, L50, M|\n|poke|p1|Vivillon-Ocean, L50, F|\n|poke|p1|Gholdengo, L50|\n|poke|p2|Cetitan, L50, F|\n|poke|p2|Maushold-Four, L50|\n|poke|p2|Flamigo, L50, F|\n|poke|p2|Ninetales-Alola, L50, M|\n|poke|p2|Archaludon, L50, M|\n|poke|p2|Kommo-o, L50, M|\n|teampreview|4\n|inactive|Battle timer is ON: inactive players will automatically lose when time's up. (requested by Shadowknight16)\n|\n|t:|1735750959\n|start\n|switch|p1a: Vivillon|Vivillon-Ocean, L50, F|100/100\n|switch|p1b: Garchomp|Garchomp, L50, M|100/100\n|switch|p2a: Ninetales|Ninetales-Alola, L50, M|100/100\n|switch|p2b: Cetitan|Cetitan, L50, F|100/100\n|-weather|Snow|[from] ability: Snow Warning|[of] p2a: Ninetales\n|turn|1\n|inactive|Shadowknight16 has 30 seconds left.\n|\n|t:|1735750991\n|move|p2b: Cetitan|Protect|p2b: Cetitan\n|-singleturn|p2b: Cetitan|Protect\n|move|p2a: Ninetales|Blizzard|p1b: Garchomp|[spread] p1a,p1b\n|-supereffective|p1a: Vivillon\n|-supereffective|p1b: Garchomp\n|-enditem|p1a: Vivillon|Focus Sash\n|-damage|p1a: Vivillon|1/100\n|-damage|p1b: Garchomp|0 fnt\n|faint|p1b: Garchomp\n|move|p1a: Vivillon|Sleep Powder|p2b: Cetitan\n|-activate|p2b: Cetitan|move: Protect\n|\n|-weather|Snow|[upkeep]\n|upkeep\n|-message|Aditya1 forfeited.\n|\n|win|Shadowknight16\n|raw|Aditya1's rating: 1078 &rarr; <strong>1059</strong><br />(-19 for losing)\n|raw|Shadowknight16's rating: 1127 &rarr; <strong>1148</strong><br />(+21 for winning)\n|l|\u2606Aditya1\n|player|p1|\n|l|\u2606Shadowknight16\n|player|p2|\n",
+  "uploadtime": 1735751382,
+  "views": 335,
+  "formatid": "gen9vgc2024regh",
+  "rating": 1059,
+  "private": 0,
+  "password": null
+}

@@ -1,0 +1,15 @@
+{
+  "id": "gen9vgc2024regh-2273119948",
+  "format": "[Gen 9] VGC 2024 Reg H",
+  "players": [
+    "fjll233",
+    "Dv147"
+  ],
+  "log": "|j|\u2606fjll233\n|j|\u2606Dv147\n|t:|1735734718\n|gametype|doubles\n|player|p1|fjll233|biker|1378\n|player|p2|Dv147|170|1605\n|teamsize|p1|6\n|teamsize|p2|6\n|gen|9\n|tier|[Gen 9] VGC 2024 Reg H\n|rated|\n|rule|Species Clause: Limit one of each Pok\u00e9mon\n|rule|Item Clause: Limit 1 of each item\n|clearpoke\n|poke|p1|Kilowattrel, L50, M|\n|poke|p1|Raichu, L50, M|\n|poke|p1|Indeedee, L50, M|\n|poke|p1|Dragonite, L50, F|\n|poke|p1|Garchomp, L50, F|\n|poke|p1|Whimsicott, L50, F|\n|poke|p2|Ursaluna-Bloodmoon, L50, M|\n|poke|p2|Torkoal, L50, M|\n|poke|p2|Lilligant-Hisui, L50, F|\n|poke|p2|Oranguru, L50, F|\n|poke|p2|Annihilape, L50, M|\n|poke|p2|Kingambit, L50, F|\n|teampreview|4\n|inactive|Battle timer is ON: inactive players will automatically lose when time's up. (requested by fjll233)\n|\n|t:|1735734734\n|start\n|switch|p1a: Raichu|Raichu, L50, M|100/100\n|switch|p1b: Kilowattrel|Kilowattrel, L50, M|100/100\n|switch|p2a: Oranguru|Oranguru, L50, F|100/100\n|switch|p2b: Annihilape|Annihilape, L50, M|100/100\n|turn|1\n|\n|t:|1735734754\n|-terastallize|p1b: Kilowattrel|Ghost\n|move|p1a: Raichu|Fake Out|p2a: Oranguru\n|-damage|p2a: Oranguru|94/100\n|move|p2b: Annihilape|Final Gambit|p1a: Raichu\n|-damage|p1a: Raichu|0 fnt\n|faint|p2b: Annihilape\n|faint|p1a: Raichu\n|move|p1b: Kilowattrel|Discharge|p2a: Oranguru\n|-damage|p2a: Oranguru|52/100\n|move|p2a: Oranguru|Trick Room|p2a: Oranguru\n|-fieldstart|move: Trick Room|[of] p2a: Oranguru\n|\n|upkeep\n|\n|t:|1735734771\n|switch|p2b: Ursaluna|Ursaluna-Bloodmoon, L50, M|100/100\n|switch|p1a: Indeedee|Indeedee, L50, M|100/100\n|-fieldstart|move: Psychic Terrain|[from] ability: Psychic Surge|[of] p1a: Indeedee\n|turn|2\n|-message|fjll233 forfeited.\n|\n|win|Dv147\n|raw|fjll233's rating: 1378 &rarr; <strong>1369</strong><br />(-9 for losing)\n|raw|Dv147's rating: 1605 &rarr; <strong>1614</strong><br />(+9 for winning)\n|l|\u2606fjll233\n|player|p1|\n|l|\u2606Dv147\n|player|p2|\n",
+  "uploadtime": 1735735172,
+  "views": 27,
+  "formatid": "gen9vgc2024regh",
+  "rating": 1369,
+  "private": 0,
+  "password": null
+}

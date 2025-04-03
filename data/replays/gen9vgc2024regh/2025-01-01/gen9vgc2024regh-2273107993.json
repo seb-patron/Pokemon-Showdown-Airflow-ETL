@@ -1,0 +1,15 @@
+{
+  "id": "gen9vgc2024regh-2273107993",
+  "format": "[Gen 9] VGC 2024 Reg H",
+  "players": [
+    "Dearp",
+    "elblitz_"
+  ],
+  "log": "|j|\u2606Dearp\n|j|\u2606elblitz_\n|t:|1735731944\n|gametype|doubles\n|player|p1|Dearp|battlegirl|1445\n|player|p2|elblitz_|2|1496\n|teamsize|p1|6\n|teamsize|p2|6\n|gen|9\n|tier|[Gen 9] VGC 2024 Reg H\n|rated|\n|rule|Species Clause: Limit one of each Pok\u00e9mon\n|rule|Item Clause: Limit 1 of each item\n|clearpoke\n|poke|p1|Tyranitar, L50, F|\n|poke|p1|Lycanroc, L50, M|\n|poke|p1|Indeedee-F, L50, F|\n|poke|p1|Murkrow, L50, F|\n|poke|p1|Garchomp, L50, M|\n|poke|p1|Gholdengo, L50|\n|poke|p2|Incineroar, L50, M|\n|poke|p2|Amoonguss, L50, M|\n|poke|p2|Gengar, L50, M|\n|poke|p2|Archaludon, L50, F|\n|poke|p2|Pelipper, L50, F|\n|poke|p2|Basculegion, L50, M|\n|teampreview|4\n|inactive|Battle timer is ON: inactive players will automatically lose when time's up. (requested by elblitz_)\n|\n|t:|1735731967\n|start\n|switch|p1a: Tyranitar|Tyranitar, L50, F|100/100\n|switch|p1b: Gholdengo|Gholdengo, L50|100/100\n|switch|p2a: Incineroar|Incineroar, L50, M|100/100\n|switch|p2b: Gengar|Gengar, L50, M|100/100\n|-weather|Sandstorm|[from] ability: Sand Stream|[of] p1a: Tyranitar\n|-ability|p2a: Incineroar|Intimidate|boost\n|-fail|p1a: Tyranitar|unboost|[from] item: Clear Amulet|[of] p1a: Tyranitar\n|-unboost|p1b: Gholdengo|atk|1\n|turn|1\n|inactive|elblitz_ has 30 seconds left.\n|\n|t:|1735731994\n|switch|p1b: Murkrow|Murkrow, L50, F|100/100\n|-terastallize|p2a: Incineroar|Ghost\n|move|p1a: Tyranitar|Rock Slide|p2a: Incineroar|[spread] p2a,p2b\n|-damage|p2a: Incineroar|71/100\n|-damage|p2b: Gengar|69/100\n|-start|p1a: Tyranitar|Disable|Rock Slide|[from] ability: Cursed Body|[of] p2b: Gengar\n|move|p2a: Incineroar|Knock Off|p1b: Murkrow\n|-resisted|p1b: Murkrow\n|-damage|p1b: Murkrow|71/100\n|-enditem|p1b: Murkrow|Eviolite|[from] move: Knock Off|[of] p2a: Incineroar\n|move|p2b: Gengar|Trick Room|p2b: Gengar\n|-fieldstart|move: Trick Room|[of] p2b: Gengar\n|\n|-weather|Sandstorm|[upkeep]\n|-damage|p2a: Incineroar|65/100|[from] Sandstorm\n|-damage|p2b: Gengar|63/100|[from] Sandstorm\n|-damage|p1b: Murkrow|65/100|[from] Sandstorm\n|upkeep\n|turn|2\n|\n|t:|1735732014\n|move|p2a: Incineroar|Close Combat|p1a: Tyranitar\n|-supereffective|p1a: Tyranitar\n|-damage|p1a: Tyranitar|0 fnt\n|-unboost|p2a: Incineroar|def|1\n|-unboost|p2a: Incineroar|spd|1\n|faint|p1a: Tyranitar\n|move|p2b: Gengar|Sludge Bomb|p1b: Murkrow\n|-damage|p1b: Murkrow|0 fnt\n|faint|p1b: Murkrow\n|\n|-weather|Sandstorm|[upkeep]\n|-damage|p2a: Incineroar|59/100|[from] Sandstorm\n|-damage|p2b: Gengar|57/100|[from] Sandstorm\n|upkeep\n|-message|Dearp forfeited.\n|\n|win|elblitz_\n|raw|Dearp's rating: 1445 &rarr; <strong>1428</strong><br />(-17 for losing)\n|raw|elblitz_'s rating: 1496 &rarr; <strong>1513</strong><br />(+17 for winning)\n|l|\u2606Dearp\n|player|p1|\n|l|\u2606elblitz_\n|player|p2|\n",
+  "uploadtime": 1735732381,
+  "views": 17,
+  "formatid": "gen9vgc2024regh",
+  "rating": 1428,
+  "private": 0,
+  "password": null
+}

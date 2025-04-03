@@ -1,0 +1,25 @@
+"""
+Constants and configuration variables for the Pokemon Replay ETL.
+"""
+import os
+
+# Directory where data will be stored
+BASE_DIR = os.path.join("/opt/airflow/data")
+REPLAYS_DIR = os.path.join(BASE_DIR, "replays")
+REPLAY_IDS_DIR = os.path.join(BASE_DIR, "replay_ids")
+PROCESSED_IDS_DIR = os.path.join(BASE_DIR, "processed_ids")
+FAILED_IDS_DIR = os.path.join(BASE_DIR, "failed_ids")
+
+# Default format to scrape replays for
+DEFAULT_FORMAT = "gen9vgc2024regh"  # Default format, can be overridden by DAG param
+
+# Default maximum number of pages to fetch (safety to avoid infinite loop)
+DEFAULT_MAX_PAGES = 5
+
+# API endpoints
+SEARCH_API_URL = "https://replay.pokemonshowdown.com/search.json"
+REPLAY_API_URL = "https://replay.pokemonshowdown.com/{}.json"
+
+# Create necessary directories
+for directory in [BASE_DIR, REPLAYS_DIR, REPLAY_IDS_DIR, PROCESSED_IDS_DIR, FAILED_IDS_DIR]:
+    os.makedirs(directory, exist_ok=True) 

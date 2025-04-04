@@ -1,5 +1,5 @@
 """
-Constants and configuration variables for the Pokemon Replay ETL.
+Constants and configuration variables for the Showdown Replay ETL.
 """
 import os
 
@@ -7,8 +7,6 @@ import os
 BASE_DIR = os.path.join("/opt/airflow/data")
 REPLAYS_DIR = os.path.join(BASE_DIR, "replays")
 REPLAY_IDS_DIR = os.path.join(BASE_DIR, "replay_ids")
-PROCESSED_IDS_DIR = os.path.join(BASE_DIR, "processed_ids")
-FAILED_IDS_DIR = os.path.join(BASE_DIR, "failed_ids")
 COMPACTED_REPLAYS_DIR = os.path.join(BASE_DIR, "compacted_replays")
 
 # Default format to scrape replays for
@@ -22,5 +20,5 @@ SEARCH_API_URL = "https://replay.pokemonshowdown.com/search.json"
 REPLAY_API_URL = "https://replay.pokemonshowdown.com/{}.json"
 
 # Create necessary directories
-for directory in [BASE_DIR, REPLAYS_DIR, REPLAY_IDS_DIR, PROCESSED_IDS_DIR, FAILED_IDS_DIR, COMPACTED_REPLAYS_DIR]:
+for directory in [BASE_DIR, REPLAYS_DIR, REPLAY_IDS_DIR, COMPACTED_REPLAYS_DIR]:
     os.makedirs(directory, exist_ok=True) 

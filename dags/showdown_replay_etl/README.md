@@ -1,4 +1,4 @@
-# Pokémon Replay ETL Module
+# Showdown Replay ETL Module
 
 A modular Airflow implementation for extracting, transforming, and loading Pokémon Showdown battle replays.
 
@@ -44,7 +44,7 @@ Implements the three main Airflow tasks:
 
 ## Main DAG File
 
-The main DAG is defined in `pokemon_replay_etl_dag.py` in the parent directory, which imports the components from this module.
+The main DAG is defined in `showdown_replay_etl_dag.py` in the parent directory, which imports the components from this module.
 
 ## Data Flow
 

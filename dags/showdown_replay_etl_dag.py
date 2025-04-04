@@ -12,9 +12,10 @@ import pendulum
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.utils.trigger_rule import TriggerRule
 
-from pokemon_replay_etl.constants import DEFAULT_FORMAT, DEFAULT_MAX_PAGES
-from pokemon_replay_etl.tasks import get_replay_ids, download_replays, retry_failed_replays, compact_daily_replays
+from showdown_replay_etl.constants import DEFAULT_FORMAT, DEFAULT_MAX_PAGES
+from showdown_replay_etl.tasks import get_replay_ids, download_replays, retry_failed_replays, compact_daily_replays
 
 # Define default DAG arguments
 default_args = {
@@ -28,7 +29,7 @@ default_args = {
 
 # Create DAG
 with DAG(
-    'pokemon_replay_etl',
+    'showdown_replay_etl',
     default_args=default_args,
     description='ETL process for Pokemon Showdown replays',
     schedule_interval=timedelta(days=1),
@@ -37,6 +38,7 @@ with DAG(
     params={
         'format_id': DEFAULT_FORMAT,
         'max_pages': DEFAULT_MAX_PAGES,
+        'ignore_history': False,  # Set to True to force processing all replays for testing
     },
 ) as dag:
     
@@ -66,6 +68,7 @@ with DAG(
         task_id='compact_daily_replays',
         python_callable=compact_daily_replays,
         provide_context=True,
+        trigger_rule=TriggerRule.ALL_DONE,
     )
     
     # Define task dependencies

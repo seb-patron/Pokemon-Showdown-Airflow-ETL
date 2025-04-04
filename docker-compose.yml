@@ -32,6 +32,8 @@ services:
       - _AIRFLOW_WWW_USER_USERNAME=admin
       - _AIRFLOW_WWW_USER_PASSWORD=admin
       - _PIP_ADDITIONAL_REQUIREMENTS=requests>=2.28.0 pendulum>=2.0.0
+      - PYTHONPATH=/opt/airflow
+      - AIRFLOW_CONN_REPLAY_METADATA_DB=sqlite:////opt/airflow/data/replay_metadata.db
     ports:
       - "8080:8080"
     volumes:
@@ -53,6 +55,8 @@ services:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
       - _PIP_ADDITIONAL_REQUIREMENTS=requests>=2.28.0 pendulum>=2.0.0
+      - PYTHONPATH=/opt/airflow
+      - AIRFLOW_CONN_REPLAY_METADATA_DB=sqlite:////opt/airflow/data/replay_metadata.db
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs

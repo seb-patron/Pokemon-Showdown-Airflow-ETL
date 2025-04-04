@@ -1,0 +1,45 @@
+# Airflow showdown-replays ETL project gitignore
+
+# Ignore data files
+/data/
+**/data/*
+!/data/.gitkeep
+
+# Python 
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Airflow logs
+logs/
+airflow-webserver.pid
+
+# Environment
+.env
+.venv
+venv/
+ENV/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store 

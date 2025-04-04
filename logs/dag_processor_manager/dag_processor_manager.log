@@ -8422,3 +8422,65 @@ File Path                                           PID    Runtime      # DAGs  
 /opt/airflow/dags/showdown_replay_etl/constants.py                           0           0  0.13s           2025-04-04T20:37:11                       3
 /opt/airflow/dags/showdown_replay_etl/tasks.py                               0           0  0.12s           2025-04-04T20:37:23                       5
 ================================================================================
+[2025-04-04T20:37:59.550+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                           PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/showdown_replay_etl_dag.py                                 1           0  0.23s           2025-04-04T20:37:55                      14
+/opt/airflow/dags/showdown_replay_etl/tasks.py                               0           0  0.13s           2025-04-04T20:37:53                       5
+/opt/airflow/dags/showdown_replay_etl/constants.py                           0           0  0.07s           2025-04-04T20:37:42                       3
+================================================================================
+[2025-04-04T20:38:29.892+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                           PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/showdown_replay_etl_dag.py                                 1           0  0.22s           2025-04-04T20:38:26                      14
+/opt/airflow/dags/showdown_replay_etl/tasks.py                               0           0  0.13s           2025-04-04T20:38:23                       5
+/opt/airflow/dags/showdown_replay_etl/constants.py                           0           0  0.07s           2025-04-04T20:38:12                       3
+================================================================================
+[2025-04-04T20:39:00.251+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                           PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/showdown_replay_etl_dag.py                                 1           0  0.20s           2025-04-04T20:38:56                      14
+/opt/airflow/dags/showdown_replay_etl/tasks.py                               0           0  0.14s           2025-04-04T20:38:54                       5
+/opt/airflow/dags/showdown_replay_etl/constants.py                           0           0  0.07s           2025-04-04T20:38:43                       3
+================================================================================
+[2025-04-04T20:39:09.322+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2025-04-04T20:39:09.362+0000] {manager.py:824} INFO - There are 3 files in /opt/airflow/dags
+[2025-04-04T20:39:30.795+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                           PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/showdown_replay_etl/constants.py                           0           0  0.19s           2025-04-04T20:39:13                       3
+/opt/airflow/dags/showdown_replay_etl_dag.py                                 1           0  0.19s           2025-04-04T20:39:26                      14
+/opt/airflow/dags/showdown_replay_etl/tasks.py                               0           0  0.12s           2025-04-04T20:39:24                       5
+================================================================================
+[2025-04-04T20:40:01.170+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                           PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/showdown_replay_etl_dag.py                                 1           0  0.21s           2025-04-04T20:39:57                      14
+/opt/airflow/dags/showdown_replay_etl/tasks.py                               0           0  0.15s           2025-04-04T20:39:55                       5
+/opt/airflow/dags/showdown_replay_etl/constants.py                           0           0  0.08s           2025-04-04T20:39:43                       3
+================================================================================
+[2025-04-04T20:40:31.561+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                           PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/showdown_replay_etl_dag.py                                 1           0  0.31s           2025-04-04T20:40:27                      14
+/opt/airflow/dags/showdown_replay_etl/tasks.py                               0           0  0.15s           2025-04-04T20:40:25                       5
+/opt/airflow/dags/showdown_replay_etl/constants.py                           0           0  0.08s           2025-04-04T20:40:14                       3
+================================================================================

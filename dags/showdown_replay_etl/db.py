@@ -238,6 +238,59 @@ def record_replay_discovery(replay_id: str, format_id: str, uploadtime: int, pla
     conn.commit()
     conn.close()
 
+def batch_record_replay_discoveries(replays: List[Dict[str, Any]], format_id: str, batch_id: Optional[str] = None):
+    """
+    Record multiple replay discoveries in a single database transaction for better efficiency.
+    
+    Args:
+        replays: List of dictionaries, each containing replay information
+                Each dictionary must have 'id' and 'uploadtime' keys, and optionally 'players' and other metadata
+        format_id: The format ID that applies to all replays in this batch
+        batch_id: Optional batch identifier
+    """
+    if not replays:
+        return
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    now = datetime.now().isoformat()
+    
+    try:
+        # Start a transaction
+        cursor.execute("BEGIN TRANSACTION")
+        
+        for replay in replays:
+            replay_id = replay['id']
+            uploadtime = replay['uploadtime']
+            players = replay.get('players')
+            
+            # Extract additional info and remove known fields
+            additional_info = {k: v for k, v in replay.items() if k not in ('id', 'uploadtime', 'players', 'format')}
+            additional_info_json = json.dumps(additional_info) if additional_info else None
+            
+            # Use INSERT OR REPLACE to handle potential duplicates
+            cursor.execute('''
+            INSERT OR REPLACE INTO replay_status (
+                replay_id, format_id, 
+                discovered_at, discovered_batch,
+                uploadtime, players, additional_info
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (replay_id, format_id, now, batch_id, uploadtime, players, additional_info_json))
+        
+        # Commit the transaction
+        conn.commit()
+        logger.info(f"Successfully recorded {len(replays)} replays in batch")
+        
+    except Exception as e:
+        # Roll back the transaction if there's an error
+        conn.rollback()
+        logger.error(f"Error in batch insert: {e}")
+        logger.error(traceback.format_exc())
+        
+    finally:
+        conn.close()
+
 def get_replay_metadata(replay_id: str) -> Optional[Dict[str, Any]]:
     """
     Get metadata for a replay.
@@ -619,6 +672,136 @@ def get_replays_by_date(format_id: str) -> Dict[str, List[str]]:
         replays_by_date[date_str].append(replay_id)
     
     return replays_by_date
+
+def check_replays_existence(replay_ids: List[str], format_id: str) -> Dict[str, bool]:
+    """
+    Check if multiple replay IDs already exist and are downloaded in the database.
+    This is more efficient than individual checks for each replay.
+    
+    Args:
+        replay_ids: List of replay IDs to check
+        format_id: The format ID to check against
+        
+    Returns:
+        A dictionary mapping replay IDs to boolean values (True if downloaded, False if not)
+    """
+    if not replay_ids:
+        return {}
+        
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Use placeholders for the query
+    placeholders = ','.join(['?'] * len(replay_ids))
+    
+    # Check which replays are already downloaded
+    cursor.execute(f'''
+    SELECT replay_id, is_downloaded 
+    FROM replay_status
+    WHERE replay_id IN ({placeholders}) AND format_id = ?
+    ''', replay_ids + [format_id])
+    
+    results = {row['replay_id']: bool(row['is_downloaded']) for row in cursor.fetchall()}
+    conn.close()
+    
+    # For any replay_id not in the results, it doesn't exist in the database
+    return {replay_id: results.get(replay_id, False) for replay_id in replay_ids}
+
+def batch_mark_replays_downloaded(replay_info_list: List[Dict[str, Any]], format_id: str, batch_id: Optional[str] = None):
+    """
+    Mark multiple replays as downloaded in a single database transaction for better efficiency.
+    
+    Args:
+        replay_info_list: List of dictionaries containing replay information
+                         Each dictionary must have 'replay_id' and 'details' keys
+        format_id: The format ID that applies to all replays in this batch
+        batch_id: Optional batch identifier
+    """
+    if not replay_info_list:
+        return
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    now = datetime.now().isoformat()
+    
+    try:
+        # Start a transaction
+        cursor.execute("BEGIN TRANSACTION")
+        
+        for info in replay_info_list:
+            replay_id = info['replay_id']
+            details = info.get('details', 'Downloaded in batch operation')
+            
+            cursor.execute('''
+            UPDATE replay_status
+            SET is_downloaded = TRUE,
+                downloaded_at = ?,
+                downloaded_batch = ?,
+                download_details = ?
+            WHERE replay_id = ? AND format_id = ?
+            ''', (now, batch_id, details, replay_id, format_id))
+        
+        # Commit the transaction
+        conn.commit()
+        logger.info(f"Successfully marked {len(replay_info_list)} replays as downloaded")
+        
+    except Exception as e:
+        # Roll back the transaction if there's an error
+        conn.rollback()
+        logger.error(f"Error in batch update: {e}")
+        logger.error(traceback.format_exc())
+        
+    finally:
+        conn.close()
+
+def batch_mark_replays_failed(replay_info_list: List[Dict[str, Any]], format_id: str, batch_id: Optional[str] = None):
+    """
+    Mark multiple replays as having failed download in a single database transaction.
+    
+    Args:
+        replay_info_list: List of dictionaries containing replay information
+                         Each dictionary must have 'replay_id' and 'error' keys
+        format_id: The format ID that applies to all replays in this batch
+        batch_id: Optional batch identifier
+    """
+    if not replay_info_list:
+        return
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    now = datetime.now().isoformat()
+    
+    try:
+        # Start a transaction
+        cursor.execute("BEGIN TRANSACTION")
+        
+        for info in replay_info_list:
+            replay_id = info['replay_id']
+            error_details = info.get('error', 'Unknown error during batch operation')
+            
+            cursor.execute('''
+            UPDATE replay_status
+            SET is_downloaded = FALSE,
+                downloaded_at = ?,
+                downloaded_batch = ?,
+                download_details = ?
+            WHERE replay_id = ? AND format_id = ?
+            ''', (now, batch_id, f"ERROR: {error_details}", replay_id, format_id))
+        
+        # Commit the transaction
+        conn.commit()
+        logger.info(f"Successfully marked {len(replay_info_list)} replays as failed download")
+        
+    except Exception as e:
+        # Roll back the transaction if there's an error
+        conn.rollback()
+        logger.error(f"Error in batch update for failed replays: {e}")
+        logger.error(traceback.format_exc())
+        
+    finally:
+        conn.close()
 
 # Initialize the database when the module is imported
 initialize_db() 

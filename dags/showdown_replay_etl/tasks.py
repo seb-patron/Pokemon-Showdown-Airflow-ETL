@@ -24,7 +24,9 @@ from showdown_replay_etl.db import (
     record_replay_discovery, get_undownloaded_replays, get_downloaded_uncompacted_replays,
     is_replay_downloaded, is_replay_compacted, mark_replay_downloaded, mark_download_failed,
     mark_replay_compacted, mark_retry_attempt, get_failed_downloads,
-    get_latest_uploadtime, get_replay_metadata, get_stats_by_format, get_replays_by_date
+    get_latest_uploadtime, get_replay_metadata, get_stats_by_format, get_replays_by_date,
+    batch_record_replay_discoveries, check_replays_existence, batch_mark_replays_downloaded,
+    batch_mark_replays_failed
 )
 
 logger = logging.getLogger(__name__)
@@ -33,12 +35,15 @@ def get_replay_ids(**context):
     """
     Airflow task to fetch and save replay IDs for a format.
     Continues until it reaches the last processed ID or runs out of IDs.
-    Also records the fetched IDs in the metadata database.
+    Records the fetched IDs directly in the metadata database using batch processing.
     """
     ti: TaskInstance = context['ti']
     format_id = context['params'].get('format_id', DEFAULT_FORMAT)
     max_pages = context['params'].get('max_pages', DEFAULT_MAX_PAGES)
     ignore_history = context['params'].get('ignore_history', False)
+    
+    # Batch processing config
+    BATCH_SIZE = 50  # Number of replays to process in a single database transaction
     
     logger.info(f"Fetching replay IDs for format: {format_id}, max pages: {max_pages}, ignore_history: {ignore_history}")
     
@@ -56,20 +61,14 @@ def get_replay_ids(**context):
     else:
         logger.info("Ignoring history, will process all available replays")
     
-    new_replay_ids = []
-    new_reference_ts = None
+    # Create a unique batch ID for this run to track related replays
+    batch_id = f"{format_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    
+    new_replay_count = 0
     page = 0
     total_replays_found = 0
     before_ts = None
     done = False
-    
-    # Create format-specific directory for replay IDs
-    format_dir = os.path.join(REPLAY_IDS_DIR, format_id)
-    os.makedirs(format_dir, exist_ok=True)
-    
-    # Create a unique batch ID for this run to track related replays
-    batch_id = f"{format_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-    output_file = os.path.join(format_dir, f"{batch_id}.json")
     
     try:
         while page < max_pages and not done:
@@ -88,44 +87,62 @@ def get_replay_ids(**context):
             if page > 0:
                 time.sleep(0.5)
             
-            # Process each replay on this page
-            for rep in replays:
-                r_id = rep["id"]
-                r_time = rep["uploadtime"]
-                players = rep.get("p1", "") + " vs " + rep.get("p2", "")
+            # Extract IDs from all replays on this page
+            replay_ids = [rep["id"] for rep in replays]
+            replay_map = {rep["id"]: rep for rep in replays}
+            
+            # Check which replays are already downloaded (in a single batch query)
+            if not ignore_history:
+                logger.info(f"Checking existence of {len(replay_ids)} replay IDs in database")
+                existing_replays = check_replays_existence(replay_ids, format_id)
                 
-                # Check if we've reached the last seen timestamp (unless ignoring history)
-                if not ignore_history and r_time <= last_seen_ts and last_seen_ts > 0:
-                    logger.info(f"Reached already seen replay with timestamp {r_time}, stopping")
-                    done = True
+                # Filter out already downloaded replays
+                new_replay_ids = [r_id for r_id, is_downloaded in existing_replays.items() 
+                                  if not is_downloaded]
+                
+                if len(new_replay_ids) < len(replay_ids):
+                    logger.info(f"Filtered out {len(replay_ids) - len(new_replay_ids)} already downloaded replays")
+            else:
+                # If ignoring history, process all replays
+                new_replay_ids = replay_ids
+            
+            # Process replays in batches
+            batch_to_store = []
+            
+            for i in range(0, len(new_replay_ids), BATCH_SIZE):
+                current_batch_ids = new_replay_ids[i:i+BATCH_SIZE]
+                
+                # Check for reaching last seen timestamp
+                if not ignore_history and last_seen_ts > 0:
+                    # Check if any replay in this batch is older than our last seen timestamp
+                    for r_id in current_batch_ids:
+                        rep = replay_map[r_id]
+                        r_time = rep["uploadtime"]
+                        
+                        if r_time <= last_seen_ts:
+                            logger.info(f"Reached already seen replay with timestamp {r_time}, stopping")
+                            done = True
+                            break
+                
+                if done:
                     break
-                
-                # Track the max timestamp seen
-                if not new_reference_ts or r_time > new_reference_ts:
-                    new_reference_ts = r_time
-                
-                # Check if this particular replay has already been processed (more precise check)
-                if not ignore_history and is_replay_downloaded(r_id, format_id):
-                    logger.debug(f"Replay {r_id} was already downloaded, skipping")
-                    continue
                     
-                # Add to our list of IDs to process
-                new_replay_ids.append({
-                    "id": r_id,
-                    "uploadtime": r_time,
-                    "format": format_id,
-                    "players": players
-                })
+                # Prepare batch for database insertion
+                batch_data = []
+                for r_id in current_batch_ids:
+                    rep = replay_map[r_id]
+                    batch_data.append({
+                        "id": r_id,
+                        "uploadtime": rep["uploadtime"],
+                        "format": format_id,
+                        "players": rep.get("p1", "") + " vs " + rep.get("p2", ""),
+                        "page": page+1
+                    })
                 
-                # Store in the database
-                record_replay_discovery(
-                    replay_id=r_id,
-                    format_id=format_id,
-                    uploadtime=r_time,
-                    players=players,
-                    additional_info={"page": page+1},
-                    batch_id=batch_id
-                )
+                if batch_data:
+                    logger.info(f"Processing batch of {len(batch_data)} replays")
+                    batch_record_replay_discoveries(batch_data, format_id, batch_id)
+                    new_replay_count += len(batch_data)
             
             # Prepare for next page if needed
             if done or len(replays) < 51:  # 51 indicates more pages
@@ -140,16 +157,18 @@ def get_replay_ids(**context):
         logger.error(f"Error fetching replays: {e}")
         logger.error(traceback.format_exc())
     
-    # Save the new replay IDs to a file
-    if new_replay_ids:
-        with open(output_file, 'w') as f:
-            json.dump(new_replay_ids, f, indent=2)
-        logger.info(f"Saved {len(new_replay_ids)} replay IDs to {output_file}")
+    # Process summary and prepare for the next task
+    if new_replay_count > 0:
+        logger.info(f"Added {new_replay_count} new replay IDs to the database")
         
-        # Pass the output file to the next task
-        ti.xcom_push(key='replay_ids_file', value=output_file)
-        ti.xcom_push(key='replay_count', value=len(new_replay_ids))
+        # Pass data to the next task
+        ti.xcom_push(key='replay_count', value=new_replay_count)
         ti.xcom_push(key='batch_id', value=batch_id)
+        
+        # Build a list of replay IDs to pass to the download task directly
+        undownloaded_replays = get_undownloaded_replays(format_id)
+        replay_ids_to_download = [r['replay_id'] for r in undownloaded_replays]
+        ti.xcom_push(key='replay_ids_to_download', value=replay_ids_to_download)
     else:
         logger.info("No new replays found")
         # Skip the next task if no new replays
@@ -157,7 +176,7 @@ def get_replay_ids(**context):
 
 def download_replays(**context):
     """
-    Airflow task to download replays from the list of IDs.
+    Airflow task to download replays from the database.
     Organizes replays by date and records processing status in the metadata database.
     Processes replays in batches for better resilience.
     """
@@ -165,19 +184,25 @@ def download_replays(**context):
     format_id = context['params'].get('format_id', DEFAULT_FORMAT)
     ignore_history = context['params'].get('ignore_history', False)
     
-    # Get the file containing replay IDs from the previous task
-    replay_ids_file = ti.xcom_pull(key='replay_ids_file', task_ids='get_replay_ids')
+    # Get batch ID from previous task
     batch_id = ti.xcom_pull(key='batch_id', task_ids='get_replay_ids')
+    replay_count = ti.xcom_pull(key='replay_count', task_ids='get_replay_ids')
     
-    if not replay_ids_file or not os.path.exists(replay_ids_file):
-        logger.error(f"Replay IDs file not found: {replay_ids_file}")
-        return
+    # Get replay IDs directly from the database instead of loading from a file
+    replay_ids = ti.xcom_pull(key='replay_ids_to_download', task_ids='get_replay_ids')
     
-    # Load the replay IDs
-    with open(replay_ids_file, 'r') as f:
-        replay_list = json.load(f)
+    if not replay_ids:
+        # Fallback to querying the database directly
+        logger.info("No replay IDs received from previous task, querying database directly")
+        undownloaded_replays = get_undownloaded_replays(format_id)
+        if not undownloaded_replays:
+            logger.info("No undownloaded replays found in the database")
+            return
+            
+        # Extract just the replay IDs from the query results
+        replay_ids = [r['replay_id'] for r in undownloaded_replays]
     
-    total_replays = len(replay_list)
+    total_replays = len(replay_ids)
     logger.info(f"Processing {total_replays} replays in batch {batch_id}")
     
     # Track processing stats
@@ -190,18 +215,34 @@ def download_replays(**context):
     
     # Process replays in smaller batches to allow for better resilience
     BATCH_SIZE = 100  # Process 100 replays at a time
+    MARK_BATCH = 10  # Number of replays to mark in a batch
+    
+    # Track downloads for batch processing
+    successful_downloads = []
+    failed_downloads = []
     
     for batch_start in range(0, total_replays, BATCH_SIZE):
         batch_end = min(batch_start + BATCH_SIZE, total_replays)
-        current_batch = replay_list[batch_start:batch_end]
+        current_batch = replay_ids[batch_start:batch_end]
         
         logger.info(f"Processing mini-batch {batch_start//BATCH_SIZE + 1} of {(total_replays-1)//BATCH_SIZE + 1} "
                     f"(replays {batch_start+1}-{batch_end} of {total_replays})")
         
-        for replay_info in current_batch:
-            replay_id = replay_info["id"]
-            uploadtime = replay_info["uploadtime"]
+        for replay_id in current_batch:
+            # Get metadata for this replay
+            metadata = get_replay_metadata(replay_id)
             
+            if not metadata:
+                logger.error(f"No metadata found for replay {replay_id}")
+                stats["failed"] += 1
+                failed_downloads.append({
+                    'replay_id': replay_id,
+                    'error': 'No metadata found for replay'
+                })
+                continue
+                
+            uploadtime = metadata['uploadtime']
+                
             # Check if already processed (may have been processed in a previous failed run)
             if not ignore_history and is_replay_downloaded(replay_id, format_id):
                 logger.info(f"Replay {replay_id} already downloaded, skipping")
@@ -218,7 +259,10 @@ def download_replays(**context):
                     error_details = error_msg or "Failed to download replay data (reason unknown)"
                     logger.error(f"Failed to download replay {replay_id}: {error_details}")
                     stats["failed"] += 1
-                    mark_download_failed(replay_id, format_id, error_details, batch_id)
+                    failed_downloads.append({
+                        'replay_id': replay_id,
+                        'error': error_details
+                    })
                     continue
                 
                 # Create a directory for this replay based on the date
@@ -233,17 +277,42 @@ def download_replays(**context):
                 with open(replay_file, 'w') as f:
                     json.dump(replay_data, f, indent=2)
                 
-                # Mark as processed in the database
+                # Track for batch mark as downloaded
+                successful_downloads.append({
+                    'replay_id': replay_id,
+                    'details': f"Downloaded to {replay_file}"
+                })
+                
                 stats["downloaded"] += 1
-                mark_replay_downloaded(replay_id, format_id, 
-                                     f"Downloaded to {replay_file}", batch_id)
+                
+                # If we've reached our batch size for marking downloads, process them
+                if len(successful_downloads) >= MARK_BATCH:
+                    batch_mark_replays_downloaded(successful_downloads, format_id, batch_id)
+                    successful_downloads = []
                 
             except Exception as e:
                 error_msg = str(e)
                 logger.error(f"Error processing replay {replay_id}: {error_msg}")
                 logger.error(traceback.format_exc())
                 stats["failed"] += 1
-                mark_download_failed(replay_id, format_id, error_msg, batch_id)
+                failed_downloads.append({
+                    'replay_id': replay_id,
+                    'error': error_msg
+                })
+                
+                # If we've reached our batch size for marking failures, process them
+                if len(failed_downloads) >= MARK_BATCH:
+                    batch_mark_replays_failed(failed_downloads, format_id, batch_id)
+                    failed_downloads = []
+        
+        # Process any remaining downloads
+        if successful_downloads:
+            batch_mark_replays_downloaded(successful_downloads, format_id, batch_id)
+            successful_downloads = []
+            
+        if failed_downloads:
+            batch_mark_replays_failed(failed_downloads, format_id, batch_id)
+            failed_downloads = []
         
         # Log progress after each mini-batch
         logger.info(f"Mini-batch progress: {stats['downloaded']} downloaded, "

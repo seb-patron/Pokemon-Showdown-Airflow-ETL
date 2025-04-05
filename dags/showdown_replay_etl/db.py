@@ -600,6 +600,32 @@ def get_latest_uploadtime(format_id: str) -> Optional[int]:
         return result['latest_ts']
     return None
 
+def get_oldest_uploadtime(format_id: str) -> Optional[int]:
+    """
+    Get the oldest uploadtime for a specific format.
+    
+    Args:
+        format_id: The format ID to check
+        
+    Returns:
+        The oldest uploadtime or None if no replays found
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+    SELECT MIN(uploadtime) as oldest_ts
+    FROM replay_status
+    WHERE format_id = ?
+    ''', (format_id,))
+    
+    result = cursor.fetchone()
+    conn.close()
+    
+    if result and result['oldest_ts'] is not None:
+        return result['oldest_ts']
+    return None
+
 def get_stats_by_format(format_id: str) -> Dict[str, int]:
     """
     Get processing statistics for a format.

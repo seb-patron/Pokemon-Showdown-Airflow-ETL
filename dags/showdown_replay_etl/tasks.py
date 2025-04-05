@@ -24,7 +24,7 @@ from showdown_replay_etl.db import (
     record_replay_discovery, get_undownloaded_replays, get_downloaded_uncompacted_replays,
     is_replay_downloaded, is_replay_compacted, mark_replay_downloaded, mark_download_failed,
     mark_replay_compacted, mark_retry_attempt, get_failed_downloads,
-    get_latest_uploadtime, get_replay_metadata, get_stats_by_format, get_replays_by_date,
+    get_latest_uploadtime, get_oldest_uploadtime, get_replay_metadata, get_stats_by_format, get_replays_by_date,
     batch_record_replay_discoveries, check_replays_existence, batch_mark_replays_downloaded,
     batch_mark_replays_failed
 )
@@ -174,6 +174,136 @@ def get_replay_ids(**context):
         # Skip the next task if no new replays
         raise AirflowSkipException("No new replays found to process")
 
+def get_backfill_replay_ids(**context):
+    """
+    Airflow task to fetch and save replay IDs for a format as part of backfill process.
+    Continues until it reaches the oldest previously processed ID or runs out of IDs.
+    Records the fetched IDs directly in the metadata database using batch processing.
+    
+    This function specifically looks for replays OLDER than the oldest one we have recorded.
+    """
+    ti: TaskInstance = context['ti']
+    format_id = context['params'].get('format_id', DEFAULT_FORMAT)
+    max_pages = context['params'].get('max_pages', DEFAULT_MAX_PAGES)
+    ignore_history = context['params'].get('ignore_history', False)
+    
+    # Batch processing config
+    BATCH_SIZE = 50  # Number of replays to process in a single database transaction
+    
+    logger.info(f"Backfill: Fetching older replay IDs for format: {format_id}, max pages: {max_pages}, ignore_history: {ignore_history}")
+    
+    # Get the oldest processed replay from the database to use as a starting point
+    oldest_seen_ts = None
+    
+    if not ignore_history:
+        # Use the oldest uploadtime function to get the oldest timestamp
+        oldest_ts = get_oldest_uploadtime(format_id)
+        if oldest_ts:
+            oldest_seen_ts = oldest_ts
+            logger.info(f"Backfill: Oldest seen timestamp: {oldest_seen_ts}")
+        else:
+            logger.info("Backfill: No previously processed replays found in database")
+    else:
+        logger.info("Backfill: Ignoring history, will process all available replays")
+    
+    # Create a unique batch ID for this run to track related replays
+    batch_id = f"backfill_{format_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    
+    new_replay_count = 0
+    page = 0
+    total_replays_found = 0
+    before_ts = oldest_seen_ts  # Start from the oldest timestamp we have
+    done = False
+    
+    try:
+        while page < max_pages and not done:
+            logger.info(f"Backfill: Fetching page {page+1} for {format_id}")
+            
+            replays = fetch_replay_page(format_id, before_ts)
+            
+            if not replays:
+                logger.info(f"Backfill: No replays found on page {page+1}")
+                break
+                
+            total_replays_found += len(replays)
+            logger.info(f"Backfill: Found {len(replays)} replays on page {page+1}")
+            
+            # Add a small delay between page fetches to avoid API rate limits
+            if page > 0:
+                time.sleep(0.5)
+            
+            # Extract IDs from all replays on this page
+            replay_ids = [rep["id"] for rep in replays]
+            replay_map = {rep["id"]: rep for rep in replays}
+            
+            # Check which replays are already downloaded (in a single batch query)
+            if not ignore_history:
+                logger.info(f"Backfill: Checking existence of {len(replay_ids)} replay IDs in database")
+                existing_replays = check_replays_existence(replay_ids, format_id)
+                
+                # Filter out already downloaded replays
+                new_replay_ids = [r_id for r_id, is_downloaded in existing_replays.items() 
+                                  if not is_downloaded]
+                
+                if len(new_replay_ids) < len(replay_ids):
+                    logger.info(f"Backfill: Filtered out {len(replay_ids) - len(new_replay_ids)} already downloaded replays")
+            else:
+                # If ignoring history, process all replays
+                new_replay_ids = replay_ids
+            
+            # Process replays in batches
+            batch_to_store = []
+            
+            for i in range(0, len(new_replay_ids), BATCH_SIZE):
+                current_batch_ids = new_replay_ids[i:i+BATCH_SIZE]
+                
+                # Prepare batch for database insertion
+                batch_data = []
+                for r_id in current_batch_ids:
+                    rep = replay_map[r_id]
+                    batch_data.append({
+                        "id": r_id,
+                        "uploadtime": rep["uploadtime"],
+                        "format": format_id,
+                        "players": rep.get("p1", "") + " vs " + rep.get("p2", ""),
+                        "page": page+1
+                    })
+                
+                if batch_data:
+                    logger.info(f"Backfill: Processing batch of {len(batch_data)} replays")
+                    batch_record_replay_discoveries(batch_data, format_id, batch_id)
+                    new_replay_count += len(batch_data)
+            
+            # Prepare for next page if needed
+            if len(replays) < 51:  # 51 indicates more pages
+                logger.info(f"Backfill: Reached end of available replays (got {len(replays)} < 51)")
+                break
+                
+            # Set 'before' to the uploadtime of the last replay in this page
+            before_ts = replays[-1]["uploadtime"]
+            page += 1
+            
+    except Exception as e:
+        logger.error(f"Backfill: Error fetching replays: {e}")
+        logger.error(traceback.format_exc())
+    
+    # Process summary and prepare for the next task
+    if new_replay_count > 0:
+        logger.info(f"Backfill: Added {new_replay_count} new replay IDs to the database")
+        
+        # Pass data to the next task
+        ti.xcom_push(key='replay_count', value=new_replay_count)
+        ti.xcom_push(key='batch_id', value=batch_id)
+        
+        # Build a list of replay IDs to pass to the download task directly
+        undownloaded_replays = get_undownloaded_replays(format_id)
+        replay_ids_to_download = [r['replay_id'] for r in undownloaded_replays]
+        ti.xcom_push(key='replay_ids_to_download', value=replay_ids_to_download)
+    else:
+        logger.info("Backfill: No new replays found")
+        # Skip the next task if no new replays
+        raise AirflowSkipException("No new replays found to process")
+
 def download_replays(**context):
     """
     Airflow task to download replays from the database.
@@ -184,12 +314,16 @@ def download_replays(**context):
     format_id = context['params'].get('format_id', DEFAULT_FORMAT)
     ignore_history = context['params'].get('ignore_history', False)
     
+    # Handle task_ids mapping for different DAGs (regular vs backfill)
+    task_ids_mapping = context.get('task_ids_mapping', {})
+    source_task_id = task_ids_mapping.get('get_replay_ids', 'get_replay_ids')
+    
     # Get batch ID from previous task
-    batch_id = ti.xcom_pull(key='batch_id', task_ids='get_replay_ids')
-    replay_count = ti.xcom_pull(key='replay_count', task_ids='get_replay_ids')
+    batch_id = ti.xcom_pull(key='batch_id', task_ids=source_task_id)
+    replay_count = ti.xcom_pull(key='replay_count', task_ids=source_task_id)
     
     # Get replay IDs directly from the database instead of loading from a file
-    replay_ids = ti.xcom_pull(key='replay_ids_to_download', task_ids='get_replay_ids')
+    replay_ids = ti.xcom_pull(key='replay_ids_to_download', task_ids=source_task_id)
     
     if not replay_ids:
         # Fallback to querying the database directly

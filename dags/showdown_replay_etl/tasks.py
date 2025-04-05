@@ -27,7 +27,7 @@ from showdown_replay_etl.db import (
     mark_replay_compacted, mark_retry_attempt, get_failed_downloads,
     get_latest_uploadtime, get_oldest_uploadtime, get_replay_metadata, get_stats_by_format, get_replays_by_date,
     batch_record_replay_discoveries, check_replays_existence, batch_mark_replays_downloaded,
-    batch_mark_replays_failed
+    batch_mark_replays_failed, get_db_connection
 )
 
 logger = logging.getLogger(__name__)
@@ -648,6 +648,8 @@ def compact_daily_replays(**context):
     
     If a compacted file already exists for a date, this function will append new replays to it.
     Uses the metadata database to track which replays have been compacted to avoid duplicates.
+    
+    Updates are now batched to prevent SQLite contention and improve performance.
     """
     ti: TaskInstance = context['ti']
     format_id = context['params'].get('format_id', DEFAULT_FORMAT)
@@ -693,6 +695,11 @@ def compact_daily_replays(**context):
         "failed": 0,
         "by_date": {}
     }
+    
+    # Dictionary to collect all replay IDs that need to be marked as compacted
+    # Key is replay_id, value is (format_id, details, batch_id)
+    replays_to_mark_compacted = {}
+    batch_size = 500  # Process database updates in batches of this size
     
     for date_str, date_replay_ids in replays_by_date.items():
         if not date_replay_ids:
@@ -751,8 +758,13 @@ def compact_daily_replays(**context):
                     replay_data = json.load(f)
                     new_replays.append(replay_data)
                     
-                # Mark for successful compaction
+                # Add to the list to be marked as compacted
                 successfully_compacted_for_date.append(replay_id)
+                replays_to_mark_compacted[replay_id] = (
+                    format_id, 
+                    f"Compacted to {output_file}", 
+                    compact_batch_id
+                )
             except Exception as e:
                 logger.error(f"Error loading replay file {replay_file}: {e}")
                 stats["failed"] += 1
@@ -770,17 +782,21 @@ def compact_daily_replays(**context):
         with open(output_file, 'w') as f:
             json.dump(all_replays, f, indent=2)
         
-        # Mark all replays as compacted in the database
-        for replay_id in successfully_compacted_for_date:
-            mark_replay_compacted(replay_id, format_id, 
-                                f"Compacted to {output_file}", compact_batch_id)
-        
         logger.info(f"Compacted {len(successfully_compacted_for_date)} new replays for {date_str} to {output_file}")
         
         stats["dates_processed"] += 1
         stats["by_date"][date_str] = len(successfully_compacted_for_date)
         stats["replays_compacted"] += len(successfully_compacted_for_date)
         total_compacted += len(successfully_compacted_for_date)
+        
+        # Process database updates in batches to avoid keeping the connection open too long
+        if len(replays_to_mark_compacted) >= batch_size:
+            _batch_mark_replays_compacted(replays_to_mark_compacted)
+            replays_to_mark_compacted = {}  # Reset after processing
+    
+    # Process any remaining replays to mark as compacted
+    if replays_to_mark_compacted:
+        _batch_mark_replays_compacted(replays_to_mark_compacted)
     
     # Log summary
     if total_compacted > 0:
@@ -800,4 +816,49 @@ def compact_daily_replays(**context):
             'skipped': 0,
             'failed': 0,
             'by_date': {}
-        }) 
+        })
+
+def _batch_mark_replays_compacted(replays_dict):
+    """
+    Helper function to mark multiple replays as compacted in a single database transaction.
+    
+    Args:
+        replays_dict: Dictionary where keys are replay_ids and values are tuples of 
+                     (format_id, details, batch_id)
+    """
+    if not replays_dict:
+        return
+        
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    timestamp = datetime.now().isoformat()
+    
+    try:
+        # Prepare batch update
+        batch_data = []
+        for replay_id, (format_id, details, batch_id) in replays_dict.items():
+            batch_data.append((
+                timestamp, 
+                batch_id, 
+                details,
+                replay_id, 
+                format_id
+            ))
+        
+        # Execute batch update
+        cursor.executemany('''
+        UPDATE replay_status
+        SET is_compacted = TRUE,
+            compacted_at = ?,
+            compacted_batch = ?,
+            compacted_details = ?
+        WHERE replay_id = ? AND format_id = ?
+        ''', batch_data)
+        
+        conn.commit()
+        logger.info(f"Successfully marked {len(batch_data)} replays as compacted in batch")
+    except Exception as e:
+        logger.error(f"Error marking replays as compacted in batch: {e}")
+        conn.rollback()
+    finally:
+        conn.close() 

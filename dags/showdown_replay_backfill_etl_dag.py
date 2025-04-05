@@ -25,8 +25,9 @@ default_args = {
     'depends_on_past': False,
     'email_on_failure': False,
     'email_on_retry': False,
-    'retries': 1,
+    'retries': 2,                    # Increased from 1 to 2
     'retry_delay': timedelta(minutes=5),
+    'execution_timeout': timedelta(hours=4),  # Added 4-hour timeout for tasks
 }
 
 # Create DAG with a larger default max_pages since we're backfilling
@@ -42,6 +43,8 @@ with DAG(
         'max_pages': 50,  # Higher page count for backfill to get more historical data
         'ignore_history': False,  # Set to True to force processing all replays for testing
     },
+    max_active_runs=1,         # Only allow one run at a time to prevent database contention
+    dagrun_timeout=timedelta(hours=8),  # Added 8-hour timeout for the entire DAG
 ) as dag:
     
     # Task 1: Fetch older replay IDs
@@ -56,6 +59,7 @@ with DAG(
         task_id='download_replays',
         python_callable=download_replays,
         provide_context=True,
+        execution_timeout=timedelta(hours=6),  # Allow longer time for downloads
         op_kwargs={
             'task_ids_mapping': {
                 'get_replay_ids': 'get_backfill_replay_ids'  # Map the task_ids to use the backfill task
@@ -75,6 +79,7 @@ with DAG(
         task_id='compact_daily_replays',
         python_callable=compact_daily_replays,
         provide_context=True,
+        execution_timeout=timedelta(hours=8),  # Allow longer time for compaction
         trigger_rule=TriggerRule.ALL_DONE,
     )
     

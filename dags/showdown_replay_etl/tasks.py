@@ -10,6 +10,7 @@ import uuid
 from datetime import datetime
 from typing import Dict, Any, List
 import glob
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from airflow.models import TaskInstance
 from airflow.exceptions import AirflowSkipException
@@ -304,9 +305,85 @@ def get_backfill_replay_ids(**context):
         # Skip the next task if no new replays
         raise AirflowSkipException("No new replays found to process")
 
+def download_replay(replay_id: str, format_id: str, metadata: Dict[str, Any], ignore_history: bool = False) -> Dict[str, Any]:
+    """
+    Download a single replay and save it to the appropriate directory.
+    
+    Args:
+        replay_id: The ID of the replay to download
+        format_id: The format ID of the replay
+        metadata: The metadata for the replay
+        ignore_history: Whether to ignore history checks
+        
+    Returns:
+        A dictionary with information about the download result
+    """
+    if not metadata:
+        return {
+            'replay_id': replay_id,
+            'success': False,
+            'error': 'No metadata found for replay'
+        }
+        
+    uploadtime = metadata['uploadtime']
+        
+    # Check if already processed (may have been processed in a previous failed run)
+    if not ignore_history and is_replay_downloaded(replay_id, format_id):
+        logger.info(f"Replay {replay_id} already downloaded, skipping")
+        return {
+            'replay_id': replay_id,
+            'success': True,
+            'skipped': True,
+            'details': 'Already downloaded'
+        }
+        
+    logger.info(f"Downloading replay: {replay_id}")
+    
+    try:
+        # Fetch the replay data - returns a tuple of (data, error)
+        replay_data, error_msg = fetch_replay_data(replay_id)
+        
+        if not replay_data:
+            error_details = error_msg or "Failed to download replay data (reason unknown)"
+            logger.error(f"Failed to download replay {replay_id}: {error_details}")
+            return {
+                'replay_id': replay_id,
+                'success': False,
+                'error': error_details
+            }
+        
+        # Create a directory for this replay based on the date
+        upload_time = datetime.fromtimestamp(uploadtime)
+        date_str = upload_time.strftime("%Y-%m-%d")
+        format_dir = os.path.join(REPLAYS_DIR, format_id)
+        date_dir = os.path.join(format_dir, date_str)
+        os.makedirs(date_dir, exist_ok=True)
+        
+        # Save the replay data
+        replay_file = os.path.join(date_dir, f"{replay_id}.json")
+        with open(replay_file, 'w') as f:
+            json.dump(replay_data, f, indent=2)
+        
+        return {
+            'replay_id': replay_id,
+            'success': True,
+            'details': f"Downloaded to {replay_file}"
+        }
+            
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"Error processing replay {replay_id}: {error_msg}")
+        logger.error(traceback.format_exc())
+        return {
+            'replay_id': replay_id,
+            'success': False,
+            'error': error_msg
+        }
+
 def download_replays(**context):
     """
     Airflow task to download replays from the database.
+    Uses parallel processing via ThreadPoolExecutor to speed up downloads.
     Organizes replays by date and records processing status in the metadata database.
     Processes replays in batches for better resilience.
     """
@@ -349,11 +426,8 @@ def download_replays(**context):
     
     # Process replays in smaller batches to allow for better resilience
     BATCH_SIZE = 100  # Process 100 replays at a time
-    MARK_BATCH = 10  # Number of replays to mark in a batch
-    
-    # Track downloads for batch processing
-    successful_downloads = []
-    failed_downloads = []
+    MARK_BATCH = 10   # Number of replays to mark in a batch
+    MAX_WORKERS = 10  # Maximum number of concurrent downloads
     
     for batch_start in range(0, total_replays, BATCH_SIZE):
         batch_end = min(batch_start + BATCH_SIZE, total_replays)
@@ -362,82 +436,51 @@ def download_replays(**context):
         logger.info(f"Processing mini-batch {batch_start//BATCH_SIZE + 1} of {(total_replays-1)//BATCH_SIZE + 1} "
                     f"(replays {batch_start+1}-{batch_end} of {total_replays})")
         
+        # Get metadata for all replays in this batch
+        metadata_map = {}
         for replay_id in current_batch:
-            # Get metadata for this replay
             metadata = get_replay_metadata(replay_id)
+            if metadata:
+                metadata_map[replay_id] = metadata
+        
+        # Track downloads for batch processing
+        successful_downloads = []
+        failed_downloads = []
+        
+        # Use ThreadPoolExecutor for parallel downloads
+        concurrent_workers = min(MAX_WORKERS, len(current_batch))
+        logger.info(f"Using {concurrent_workers} concurrent workers for downloads")
+        
+        with ThreadPoolExecutor(max_workers=concurrent_workers) as executor:
+            # Submit all download tasks
+            future_to_replay = {
+                executor.submit(download_replay, replay_id, format_id, metadata_map.get(replay_id, {}), ignore_history): replay_id
+                for replay_id in current_batch
+            }
             
-            if not metadata:
-                logger.error(f"No metadata found for replay {replay_id}")
-                stats["failed"] += 1
-                failed_downloads.append({
-                    'replay_id': replay_id,
-                    'error': 'No metadata found for replay'
-                })
-                continue
+            # Process results as they complete
+            for future in as_completed(future_to_replay):
+                result = future.result()
+                replay_id = result['replay_id']
                 
-            uploadtime = metadata['uploadtime']
-                
-            # Check if already processed (may have been processed in a previous failed run)
-            if not ignore_history and is_replay_downloaded(replay_id, format_id):
-                logger.info(f"Replay {replay_id} already downloaded, skipping")
-                stats["skipped"] += 1
-                continue
-                
-            logger.info(f"Downloading replay: {replay_id}")
-            
-            try:
-                # Fetch the replay data - returns a tuple of (data, error)
-                replay_data, error_msg = fetch_replay_data(replay_id)
-                
-                if not replay_data:
-                    error_details = error_msg or "Failed to download replay data (reason unknown)"
-                    logger.error(f"Failed to download replay {replay_id}: {error_details}")
+                if result.get('skipped', False):
+                    stats["skipped"] += 1
+                elif result['success']:
+                    stats["downloaded"] += 1
+                    successful_downloads.append(result)
+                    
+                    # If we've reached our batch size for marking downloads, process them
+                    if len(successful_downloads) >= MARK_BATCH:
+                        batch_mark_replays_downloaded(successful_downloads, format_id, batch_id)
+                        successful_downloads = []
+                else:
                     stats["failed"] += 1
-                    failed_downloads.append({
-                        'replay_id': replay_id,
-                        'error': error_details
-                    })
-                    continue
-                
-                # Create a directory for this replay based on the date
-                upload_time = datetime.fromtimestamp(uploadtime)
-                date_str = upload_time.strftime("%Y-%m-%d")
-                format_dir = os.path.join(REPLAYS_DIR, format_id)
-                date_dir = os.path.join(format_dir, date_str)
-                os.makedirs(date_dir, exist_ok=True)
-                
-                # Save the replay data
-                replay_file = os.path.join(date_dir, f"{replay_id}.json")
-                with open(replay_file, 'w') as f:
-                    json.dump(replay_data, f, indent=2)
-                
-                # Track for batch mark as downloaded
-                successful_downloads.append({
-                    'replay_id': replay_id,
-                    'details': f"Downloaded to {replay_file}"
-                })
-                
-                stats["downloaded"] += 1
-                
-                # If we've reached our batch size for marking downloads, process them
-                if len(successful_downloads) >= MARK_BATCH:
-                    batch_mark_replays_downloaded(successful_downloads, format_id, batch_id)
-                    successful_downloads = []
-                
-            except Exception as e:
-                error_msg = str(e)
-                logger.error(f"Error processing replay {replay_id}: {error_msg}")
-                logger.error(traceback.format_exc())
-                stats["failed"] += 1
-                failed_downloads.append({
-                    'replay_id': replay_id,
-                    'error': error_msg
-                })
-                
-                # If we've reached our batch size for marking failures, process them
-                if len(failed_downloads) >= MARK_BATCH:
-                    batch_mark_replays_failed(failed_downloads, format_id, batch_id)
-                    failed_downloads = []
+                    failed_downloads.append(result)
+                    
+                    # If we've reached our batch size for marking failures, process them
+                    if len(failed_downloads) >= MARK_BATCH:
+                        batch_mark_replays_failed(failed_downloads, format_id, batch_id)
+                        failed_downloads = []
         
         # Process any remaining downloads
         if successful_downloads:

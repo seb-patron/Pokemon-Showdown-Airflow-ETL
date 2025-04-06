@@ -5,6 +5,7 @@ but not recorded in the database.
 
 This will scan the replay directories, find all JSON files, and add them
 to the database if they're not already there, marking them as downloaded.
+It can also check compacted files and mark replays as compacted if they exist there.
 """
 import os
 import sys
@@ -12,10 +13,13 @@ import json
 import sqlite3
 from datetime import datetime
 import re
+import argparse
+import glob
 
-# Constants
-REPLAYS_DIR = "/opt/airflow/data/replays"
-DB_PATH = "/opt/airflow/data/replay_metadata.db"
+# Constants - will be overridden with command line args
+REPLAYS_DIR = os.path.join(os.getcwd(), "data/replays")
+COMPACTED_REPLAYS_DIR = os.path.join(os.getcwd(), "data/compacted_replays")
+DB_PATH = os.path.join(os.getcwd(), "data/replay_metadata.db")
 FORMAT_ID = "gen9vgc2024regh"
 BATCH_ID = f"import_existing_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
@@ -63,16 +67,57 @@ def extract_players_from_file(file_path):
     
     return "Unknown vs Unknown"
 
-def import_replay_files():
+def get_replay_ids_from_compacted_file(file_path):
+    """Get a set of replay IDs from a compacted file"""
+    try:
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+            replay_ids = set()
+            for replay in data:
+                if 'id' in replay:
+                    replay_ids.add(replay['id'])
+            return replay_ids
+    except Exception as e:
+        print(f"Error reading compacted file {file_path}: {e}")
+        return set()
+
+def find_compacted_replay_ids(format_id):
+    """Find all replay IDs that are in compacted files"""
+    format_dir = os.path.join(COMPACTED_REPLAYS_DIR, format_id)
+    if not os.path.exists(format_dir):
+        print(f"Compacted directory {format_dir} does not exist or is not accessible")
+        return set()
+    
+    compacted_ids = set()
+    compacted_files = glob.glob(os.path.join(format_dir, "*.json"))
+    print(f"Found {len(compacted_files)} compacted files")
+    
+    for file_path in compacted_files:
+        file_ids = get_replay_ids_from_compacted_file(file_path)
+        compacted_ids.update(file_ids)
+        print(f"  Added {len(file_ids)} IDs from {os.path.basename(file_path)}")
+    
+    print(f"Total of {len(compacted_ids)} unique replay IDs found in compacted files")
+    return compacted_ids
+
+def import_replay_files(format_id=FORMAT_ID, specific_date=None, check_compacted=True):
     """Import all replay files found in the replay directories"""
-    format_dir = os.path.join(REPLAYS_DIR, FORMAT_ID)
+    format_dir = os.path.join(REPLAYS_DIR, format_id)
     if not os.path.exists(format_dir):
         print(f"Error: Format directory {format_dir} does not exist")
         return
     
     # Get list of date directories
-    date_dirs = [d for d in os.listdir(format_dir) 
-                if os.path.isdir(os.path.join(format_dir, d))]
+    if specific_date:
+        # Only process the specified date
+        date_dirs = [specific_date] if os.path.isdir(os.path.join(format_dir, specific_date)) else []
+        if not date_dirs:
+            print(f"Error: Date directory {specific_date} does not exist in {format_dir}")
+            return
+    else:
+        # Process all date directories
+        date_dirs = [d for d in os.listdir(format_dir) 
+                    if os.path.isdir(os.path.join(format_dir, d))]
     
     if not date_dirs:
         print("No date directories found")
@@ -89,11 +134,15 @@ def import_replay_files():
     existing_ids = {row['replay_id'] for row in cursor.fetchall()}
     print(f"Found {len(existing_ids)} existing replay IDs in database")
     
+    # Get compacted replay IDs if requested
+    compacted_ids = find_compacted_replay_ids(format_id) if check_compacted else set()
+    
     # Stats
     total_files = 0
     imported = 0
     already_exists = 0
     errors = 0
+    marked_compacted = 0
     
     timestamp = datetime.now().isoformat()
     
@@ -131,6 +180,13 @@ def import_replay_files():
                     uploadtime = extract_upload_time_from_file(file_path)
                     players = extract_players_from_file(file_path)
                     
+                    # Check if this replay is in a compacted file
+                    is_compacted = replay_id in compacted_ids
+                    compacted_details = f"Found in compacted file for {date_dir_name}" if is_compacted else None
+                    
+                    if is_compacted:
+                        marked_compacted += 1
+                    
                     # Add to database, mark as discovered and downloaded
                     additional_info = json.dumps({"imported": True, "date_dir": date_dir_name})
                     
@@ -143,10 +199,10 @@ def import_replay_files():
                         uploadtime, players, additional_info
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ''', (
-                        replay_id, FORMAT_ID,
+                        replay_id, format_id,
                         timestamp, BATCH_ID,
                         True, timestamp, BATCH_ID, f"Imported from file {file_path}",
-                        False, None, None, None,
+                        is_compacted, timestamp if is_compacted else None, BATCH_ID if is_compacted else None, compacted_details,
                         uploadtime, players, additional_info
                     ))
                     
@@ -167,10 +223,34 @@ def import_replay_files():
     print(f"Total files found: {total_files}")
     print(f"Files already in database: {already_exists}")
     print(f"New files imported: {imported}")
+    print(f"Files marked as compacted: {marked_compacted}")
     print(f"Errors: {errors}")
     print(f"Batch ID: {BATCH_ID}")
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Import existing replay files into the database')
+    parser.add_argument('--format', default=FORMAT_ID, help=f'Format ID to process (default: {FORMAT_ID})')
+    parser.add_argument('--date', help='Specific date to process (YYYY-MM-DD format)')
+    parser.add_argument('--no-check-compacted', action='store_true', help='Skip checking for compacted files')
+    parser.add_argument('--db-path', default=DB_PATH, help=f'Path to the database (default: {DB_PATH})')
+    parser.add_argument('--replays-dir', default=REPLAYS_DIR, help=f'Path to the replays directory (default: {REPLAYS_DIR})')
+    parser.add_argument('--compacted-dir', default=COMPACTED_REPLAYS_DIR, help=f'Path to the compacted replays directory (default: {COMPACTED_REPLAYS_DIR})')
+    
+    args = parser.parse_args()
+    
+    # Update global variables with command line arguments
+    FORMAT_ID = args.format
+    DB_PATH = args.db_path
+    REPLAYS_DIR = args.replays_dir
+    COMPACTED_REPLAYS_DIR = args.compacted_dir
+    
     print("Starting import of existing replay files...")
-    import_replay_files()
+    print(f"Format: {FORMAT_ID}")
+    print(f"Database: {DB_PATH}")
+    print(f"Replays directory: {REPLAYS_DIR}")
+    print(f"Compacted replays directory: {COMPACTED_REPLAYS_DIR}")
+    if args.date:
+        print(f"Processing only date: {args.date}")
+    
+    import_replay_files(FORMAT_ID, args.date, not args.no_check_compacted)
     print("Import completed") 

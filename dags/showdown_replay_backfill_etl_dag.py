@@ -8,6 +8,10 @@ This DAG:
 4. Compacts daily replays into single files for easier analysis
 
 It complements the regular ETL DAG by focusing on historical data.
+
+Note: The DAG will automatically stop processing when it reaches the end of available data.
+The Showdown API returns up to 51 items per page. If fewer than 51 items are returned,
+it indicates there are no more pages available and the DAG will successfully conclude.
 """
 from datetime import timedelta
 import pendulum

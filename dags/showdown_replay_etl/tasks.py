@@ -86,7 +86,7 @@ def get_replay_ids(**context):
             
             # Add a small delay between page fetches to avoid API rate limits
             if page > 0:
-                time.sleep(0.5)
+                time.sleep(0.1)
             
             # Extract IDs from all replays on this page
             replay_ids = [rep["id"] for rep in replays]
@@ -231,7 +231,7 @@ def get_backfill_replay_ids(**context):
             
             # Add a small delay between page fetches to avoid API rate limits
             if page > 0:
-                time.sleep(0.5)
+                time.sleep(0.1)
             
             # Extract IDs from all replays on this page
             replay_ids = [rep["id"] for rep in replays]
@@ -693,7 +693,11 @@ def compact_daily_replays(**context):
         "replays_compacted": 0,
         "skipped": 0,
         "failed": 0,
-        "by_date": {}
+        "by_date": {},
+        # Add detailed categorization of skips
+        "skipped_already_in_file": 0,
+        "skipped_file_not_found": 0,
+        "skipped_already_compacted": 0
     }
     
     # Dictionary to collect all replay IDs that need to be marked as compacted
@@ -738,6 +742,7 @@ def compact_daily_replays(**context):
             if replay_id in existing_replay_ids:
                 logger.debug(f"Replay {replay_id} is already in the compacted file, skipping")
                 stats["skipped"] += 1
+                stats["skipped_already_in_file"] += 1
                 continue
                 
             replay_file = os.path.join(date_dir, f"{replay_id}.json")
@@ -745,12 +750,14 @@ def compact_daily_replays(**context):
             if not os.path.exists(replay_file):
                 logger.warning(f"Replay file {replay_file} not found despite being marked as downloaded")
                 stats["skipped"] += 1
+                stats["skipped_file_not_found"] += 1
                 continue
                 
             # Check if already compacted (unless we're ignoring history)
             if not ignore_history and is_replay_compacted(replay_id, format_id):
                 logger.debug(f"Replay {replay_id} was already compacted in a previous run, skipping")
                 stats["skipped"] += 1
+                stats["skipped_already_compacted"] += 1
                 continue
             
             try:
@@ -802,7 +809,9 @@ def compact_daily_replays(**context):
     if total_compacted > 0:
         logger.info(f"Compaction complete for format {format_id}. "
                   f"Compacted {total_compacted} new replays across {stats['dates_processed']} dates. "
-                  f"Skipped: {stats['skipped']}, Failed: {stats['failed']}")
+                  f"Skipped: {stats['skipped']} (Already in file: {stats['skipped_already_in_file']}, "
+                  f"File not found: {stats['skipped_file_not_found']}, "
+                  f"Already compacted: {stats['skipped_already_compacted']}), Failed: {stats['failed']}")
         
         # Push stats to XCom
         ti.xcom_push(key='compact_stats', value=stats)
@@ -814,6 +823,9 @@ def compact_daily_replays(**context):
             'dates_processed': 0,
             'replays_compacted': 0,
             'skipped': 0,
+            'skipped_already_in_file': 0,
+            'skipped_file_not_found': 0,
+            'skipped_already_compacted': 0,
             'failed': 0,
             'by_date': {}
         })

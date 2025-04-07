@@ -71,7 +71,7 @@ def fetch_replay_data(replay_id: str) -> tuple[Optional[Dict[str, Any]], Optiona
             retry_count += 1
             if retry_count < max_retries:
                 # Back off exponentially (0.5s, 1s, 2s...)
-                time.sleep(0.5 * (2 ** (retry_count - 1)))
+                time.sleep(0.1 * (2 ** (retry_count - 1)))
                 continue
             return None, error_msg
         except requests.ConnectionError:
@@ -79,7 +79,7 @@ def fetch_replay_data(replay_id: str) -> tuple[Optional[Dict[str, Any]], Optiona
             logger.error(error_msg)
             retry_count += 1
             if retry_count < max_retries:
-                time.sleep(0.5 * (2 ** (retry_count - 1)))
+                time.sleep(0.1 * (2 ** (retry_count - 1)))
                 continue
             return None, error_msg
         except requests.HTTPError as e:
@@ -90,7 +90,7 @@ def fetch_replay_data(replay_id: str) -> tuple[Optional[Dict[str, Any]], Optiona
                 return None, error_msg
             retry_count += 1
             if retry_count < max_retries:
-                time.sleep(0.5 * (2 ** (retry_count - 1)))
+                time.sleep(0.1 * (2 ** (retry_count - 1)))
                 continue
             return None, error_msg
         except requests.RequestException as e:

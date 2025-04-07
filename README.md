@@ -1,6 +1,6 @@
 # Showdown Replay ETL with Airflow
 
-This project provides an Apache Airflow DAG for extracting, transforming, and loading Pokémon Showdown battle replays. It's based on the original script from [seb-patron/VGC-Analysis](https://github.com/seb-patron/VGC-Analysis/blob/main/src/python/extract_replays.py).
+This project provides an Apache Airflow DAG for extracting, transforming, and loading Pokémon Showdown battle replays. It downloads replay data which is then analyzed using the [VGC-Analysis](https://github.com/seb-patron/VGC-Analysis) Spark project.
 
 ## Features
 
@@ -10,6 +10,7 @@ This project provides an Apache Airflow DAG for extracting, transforming, and lo
 - Tracks processing in a SQLite database for better reliability
 - Manages failed downloads with automatic retry mechanism
 - Configurable via Airflow UI parameters
+- Modular code structure for better maintainability
 
 ## Setup
 
@@ -66,11 +67,42 @@ The project includes several utility scripts:
 - `import_existing_replays.py`: Import existing replay files into the database
 - `reset_format_state.py`: Reset the state for a specific format
 
-## Customization
+## Code Organization
 
-You can customize the DAG by editing the files in the `dags/showdown_replay_etl` directory:
+The codebase is organized in a modular structure for better readability and maintainability:
 
-- `constants.py`: Directory paths and default values
-- `tasks.py`: Task implementations
-- `db.py`: Database interaction functions
-- `api.py`: API interaction with Pokémon Showdown 
+- `dags/showdown_replay_etl/constants.py`: Directory paths and default values
+- `dags/showdown_replay_etl/api.py`: API interaction with Pokémon Showdown
+- `dags/showdown_replay_etl/db.py`: Database interaction functions
+- `dags/showdown_replay_etl/state.py`: State management utilities
+
+Tasks are organized into separate modules based on functionality:
+
+- `tasks/discovery.py`: Tasks related to discovering replay IDs from the Showdown API
+  - `get_replay_ids`: Fetches new replay IDs for a format
+  - `get_backfill_replay_ids`: Fetches older replay IDs for backfilling
+
+- `tasks/download.py`: Tasks related to downloading replay data
+  - `download_replay`: Downloads a single replay
+  - `download_replays`: Main task for downloading multiple replays in parallel
+
+- `tasks/retry.py`: Tasks related to retrying failed downloads
+  - `retry_failed_replays`: Retries previously failed replay downloads
+
+- `tasks/compaction.py`: Tasks related to compacting replays by date
+  - `compact_daily_replays`: Compacts all replays for each date into a single file
+
+## Data Analysis
+
+Once the data is collected, it can be analyzed using the [VGC-Analysis](https://github.com/seb-patron/VGC-Analysis) project. This separate project provides a framework for analyzing Pokémon VGC battle data using Apache Spark, offering:
+
+- Tools for processing large datasets of battle replays
+- Jupyter notebooks for interactive analysis
+- Pre-built analysis templates for common metrics (win rates, team compositions, etc.)
+- Examples of how to derive insights from the replay data
+
+Connect this Airflow ETL with the VGC-Analysis project by pointing the analysis notebooks to your compacted replay directory.
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues or pull requests if you have suggestions for improvements. 

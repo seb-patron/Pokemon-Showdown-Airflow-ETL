@@ -12,9 +12,11 @@ from showdown_replay_etl.constants import DEFAULT_FORMAT, REPLAYS_DIR, COMPACTED
 from showdown_replay_etl.db import (
     is_replay_compacted, get_replays_by_date, get_db_connection
 )
+from showdown_replay_etl.timer import time_process, timed, enable_detailed_timing
 
 logger = logging.getLogger(__name__)
 
+@timed(process_name="Batch mark replays as compacted")
 def _batch_mark_replays_compacted(replays_dict):
     """
     Helper function to mark multiple replays as compacted in a single database transaction.
@@ -77,6 +79,11 @@ def compact_daily_replays(**context):
     format_id = context['params'].get('format_id', DEFAULT_FORMAT)
     ignore_history = context['params'].get('ignore_history', False)
     
+    # Enable detailed timing if requested
+    enable_timing = context['params'].get('enable_detailed_timing', False)
+    if enable_timing:
+        enable_detailed_timing(True)
+    
     # Create a unique batch ID for this compaction run
     compact_batch_id = f"compact_{format_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     
@@ -98,7 +105,9 @@ def compact_daily_replays(**context):
     
     # Get all downloaded replays organized by date
     logger.info(f"Getting all downloaded replays organized by date for format {format_id}")
-    replays_by_date = get_replays_by_date(format_id)
+    
+    with time_process("Fetching all replays organized by date from database"):
+        replays_by_date = get_replays_by_date(format_id)
     
     total_replays_to_process = sum(len(ids) for ids in replays_by_date.values())
     logger.info(f"Found {total_replays_to_process} total downloaded replays across {len(replays_by_date)} dates")
@@ -141,63 +150,66 @@ def compact_daily_replays(**context):
         existing_replays = []
         existing_replay_ids = set()
         
-        if os.path.exists(output_file):
-            logger.info(f"Found existing compacted file for {date_str}, will append to it")
-            try:
-                with open(output_file, 'r') as f:
-                    existing_replays = json.load(f)
-                    # Extract replay IDs from existing data to avoid duplicates
-                    for replay in existing_replays:
-                        if 'id' in replay:
-                            existing_replay_ids.add(replay['id'])
-                logger.info(f"Loaded {len(existing_replays)} existing replays from {output_file}")
-            except Exception as e:
-                logger.error(f"Error loading existing compacted file {output_file}: {e}")
-                logger.info("Will create a new file instead")
-                existing_replays = []
-                existing_replay_ids = set()
+        with time_process(f"Checking existing compacted file for date {date_str}"):
+            if os.path.exists(output_file):
+                logger.info(f"Found existing compacted file for {date_str}, will append to it")
+                try:
+                    with open(output_file, 'r') as f:
+                        existing_replays = json.load(f)
+                        # Extract replay IDs from existing data to avoid duplicates
+                        for replay in existing_replays:
+                            if 'id' in replay:
+                                existing_replay_ids.add(replay['id'])
+                    logger.info(f"Loaded {len(existing_replays)} existing replays from {output_file}")
+                except Exception as e:
+                    logger.error(f"Error loading existing compacted file {output_file}: {e}")
+                    logger.info("Will create a new file instead")
+                    existing_replays = []
+                    existing_replay_ids = set()
         
         # Load all replays for this date
         new_replays = []
-        for replay_id in date_replay_ids:
-            # Skip if already in the existing compacted file
-            if replay_id in existing_replay_ids:
-                logger.debug(f"Replay {replay_id} is already in the compacted file, skipping")
-                stats["skipped"] += 1
-                stats["skipped_already_in_file"] += 1
-                continue
-                
-            replay_file = os.path.join(date_dir, f"{replay_id}.json")
-            
-            if not os.path.exists(replay_file):
-                logger.warning(f"Replay file {replay_file} not found despite being marked as downloaded")
-                stats["skipped"] += 1
-                stats["skipped_file_not_found"] += 1
-                continue
-                
-            # Check if already compacted (unless we're ignoring history)
-            if not ignore_history and is_replay_compacted(replay_id, format_id):
-                logger.debug(f"Replay {replay_id} was already compacted in a previous run, skipping")
-                stats["skipped"] += 1
-                stats["skipped_already_compacted"] += 1
-                continue
-            
-            try:
-                with open(replay_file, 'r') as f:
-                    replay_data = json.load(f)
-                    new_replays.append(replay_data)
+        
+        with time_process(f"Processing {len(date_replay_ids)} replays for date {date_str}"):
+            for replay_id in date_replay_ids:
+                # Skip if already in the existing compacted file
+                if replay_id in existing_replay_ids:
+                    logger.debug(f"Replay {replay_id} is already in the compacted file, skipping")
+                    stats["skipped"] += 1
+                    stats["skipped_already_in_file"] += 1
+                    continue
                     
-                # Add to the list to be marked as compacted
-                successfully_compacted_for_date.append(replay_id)
-                replays_to_mark_compacted[replay_id] = (
-                    format_id, 
-                    f"Compacted to {output_file}", 
-                    compact_batch_id
-                )
-            except Exception as e:
-                logger.error(f"Error loading replay file {replay_file}: {e}")
-                stats["failed"] += 1
-                continue
+                replay_file = os.path.join(date_dir, f"{replay_id}.json")
+                
+                if not os.path.exists(replay_file):
+                    logger.warning(f"Replay file {replay_file} not found despite being marked as downloaded")
+                    stats["skipped"] += 1
+                    stats["skipped_file_not_found"] += 1
+                    continue
+                    
+                # Check if already compacted (unless we're ignoring history)
+                if not ignore_history and is_replay_compacted(replay_id, format_id):
+                    logger.debug(f"Replay {replay_id} was already compacted in a previous run, skipping")
+                    stats["skipped"] += 1
+                    stats["skipped_already_compacted"] += 1
+                    continue
+                
+                try:
+                    with open(replay_file, 'r') as f:
+                        replay_data = json.load(f)
+                        new_replays.append(replay_data)
+                        
+                    # Add to the list to be marked as compacted
+                    successfully_compacted_for_date.append(replay_id)
+                    replays_to_mark_compacted[replay_id] = (
+                        format_id, 
+                        f"Compacted to {output_file}", 
+                        compact_batch_id
+                    )
+                except Exception as e:
+                    logger.error(f"Error loading replay file {replay_file}: {e}")
+                    stats["failed"] += 1
+                    continue
         
         if not new_replays and not existing_replays:
             logger.info(f"No replays to compact for date {date_str}")
@@ -208,8 +220,9 @@ def compact_daily_replays(**context):
         logger.info(f"Compacting {len(new_replays)} new replays with {len(existing_replays)} existing replays for {date_str}")
         
         # Save the compacted file
-        with open(output_file, 'w') as f:
-            json.dump(all_replays, f, indent=2)
+        with time_process(f"Writing compacted file for date {date_str}"):
+            with open(output_file, 'w') as f:
+                json.dump(all_replays, f, indent=2)
         
         logger.info(f"Compacted {len(successfully_compacted_for_date)} new replays for {date_str} to {output_file}")
         
@@ -220,12 +233,14 @@ def compact_daily_replays(**context):
         
         # Process database updates in batches to avoid keeping the connection open too long
         if len(replays_to_mark_compacted) >= batch_size:
-            _batch_mark_replays_compacted(replays_to_mark_compacted)
-            replays_to_mark_compacted = {}  # Reset after processing
+            with time_process(f"Marking batch of {len(replays_to_mark_compacted)} replays as compacted in database"):
+                _batch_mark_replays_compacted(replays_to_mark_compacted)
+                replays_to_mark_compacted = {}  # Reset after processing
     
     # Process any remaining replays to mark as compacted
     if replays_to_mark_compacted:
-        _batch_mark_replays_compacted(replays_to_mark_compacted)
+        with time_process(f"Marking final batch of {len(replays_to_mark_compacted)} replays as compacted in database"):
+            _batch_mark_replays_compacted(replays_to_mark_compacted)
     
     # Log summary
     if total_compacted > 0:
@@ -248,6 +263,4 @@ def compact_daily_replays(**context):
             'skipped_already_in_file': 0,
             'skipped_file_not_found': 0,
             'skipped_already_compacted': 0,
-            'failed': 0,
-            'by_date': {}
         }) 

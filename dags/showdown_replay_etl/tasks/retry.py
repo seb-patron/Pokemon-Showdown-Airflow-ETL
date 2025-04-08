@@ -16,6 +16,7 @@ from showdown_replay_etl.db import (
     get_failed_downloads, is_replay_downloaded, get_replay_metadata,
     mark_retry_attempt
 )
+from showdown_replay_etl.timer import time_process, timed, enable_detailed_timing
 
 logger = logging.getLogger(__name__)
 
@@ -28,11 +29,17 @@ def retry_failed_replays(**context):
     ti: TaskInstance = context['ti']
     format_id = context['params'].get('format_id', DEFAULT_FORMAT)
     
+    # Enable detailed timing if requested
+    enable_timing = context['params'].get('enable_detailed_timing', False)
+    if enable_timing:
+        enable_detailed_timing(True)
+    
     # Create a unique batch ID for this retry run
     retry_batch_id = f"retry_{format_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     
     # Get failed downloads from the database
-    failed_replays = get_failed_downloads(format_id)
+    with time_process("Fetching failed downloads from database"):
+        failed_replays = get_failed_downloads(format_id)
     
     if not failed_replays:
         logger.info(f"No failed replays to retry for format {format_id}")
@@ -60,65 +67,72 @@ def retry_failed_replays(**context):
                    f"(retries {batch_start+1}-{batch_end} of {len(failed_replays)})")
         
         # Process each failed replay in this batch
-        for replay_id in current_batch:
-            # Double-check that this replay hasn't been successfully downloaded since we queried
-            if is_replay_downloaded(replay_id, format_id):
-                logger.info(f"Replay {replay_id} was already successfully downloaded in a previous run, skipping")
-                stats["skipped"] += 1
-                continue
+        with time_process(f"Processing retry mini-batch {batch_start//BATCH_SIZE + 1} ({batch_end-batch_start} replays)"):
+            for replay_id in current_batch:
+                # Double-check that this replay hasn't been successfully downloaded since we queried
+                with time_process(f"Checking if replay {replay_id} is already downloaded", logging.DEBUG):
+                    if is_replay_downloaded(replay_id, format_id):
+                        logger.info(f"Replay {replay_id} was already successfully downloaded in a previous run, skipping")
+                        stats["skipped"] += 1
+                        continue
+                    
+                stats["retried"] += 1
                 
-            stats["retried"] += 1
-            
-            try:
-                # Get metadata for this replay 
-                metadata = get_replay_metadata(replay_id)
-                
-                if not metadata:
-                    logger.error(f"No metadata found for replay {replay_id}")
+                try:
+                    # Get metadata for this replay 
+                    with time_process(f"Getting metadata for replay {replay_id}", logging.DEBUG):
+                        metadata = get_replay_metadata(replay_id)
+                    
+                    if not metadata:
+                        logger.error(f"No metadata found for replay {replay_id}")
+                        stats["failed"] += 1
+                        mark_retry_attempt(replay_id, format_id, False, 
+                                         f"No metadata found for replay", retry_batch_id)
+                        continue
+                    
+                    logger.info(f"Retrying download of replay: {replay_id}")
+                    
+                    # Fetch the replay data - returns a tuple of (data, error)
+                    with time_process(f"Fetching replay data for {replay_id} on retry"):
+                        replay_data, error_msg = fetch_replay_data(replay_id)
+                    
+                    if not replay_data:
+                        error_details = error_msg or "Failed to download replay data on retry (reason unknown)"
+                        logger.error(f"Failed to download replay {replay_id} on retry: {error_details}")
+                        stats["failed"] += 1
+                        mark_retry_attempt(replay_id, format_id, False, error_details, retry_batch_id)
+                        continue
+                    
+                    # Get the date from uploadtime in metadata
+                    upload_time = datetime.fromtimestamp(metadata['uploadtime'])
+                    date_str = upload_time.strftime("%Y-%m-%d")
+                    format_dir = os.path.join(REPLAYS_DIR, format_id)
+                    date_dir = os.path.join(format_dir, date_str)
+                    os.makedirs(date_dir, exist_ok=True)
+                    
+                    # Save the replay data
+                    with time_process(f"Saving replay {replay_id} to file", logging.DEBUG):
+                        replay_file = os.path.join(date_dir, f"{replay_id}.json")
+                        with open(replay_file, 'w') as f:
+                            json.dump(replay_data, f, indent=2)
+                    
+                    # Mark as recovered
+                    stats["recovered"] += 1
+                    
+                    # Record successful retry in the database
+                    with time_process(f"Marking replay {replay_id} as recovered in database", logging.DEBUG):
+                        mark_retry_attempt(replay_id, format_id, True, 
+                                         f"Successfully recovered on retry - saved to {replay_file}", 
+                                         retry_batch_id)
+                    
+                except Exception as e:
+                    error_msg = str(e)
+                    logger.error(f"Error retrying replay {replay_id}: {error_msg}")
+                    logger.error(traceback.format_exc())
                     stats["failed"] += 1
-                    mark_retry_attempt(replay_id, format_id, False, 
-                                     f"No metadata found for replay", retry_batch_id)
-                    continue
-                
-                logger.info(f"Retrying download of replay: {replay_id}")
-                
-                # Fetch the replay data - returns a tuple of (data, error)
-                replay_data, error_msg = fetch_replay_data(replay_id)
-                
-                if not replay_data:
-                    error_details = error_msg or "Failed to download replay data on retry (reason unknown)"
-                    logger.error(f"Failed to download replay {replay_id} on retry: {error_details}")
-                    stats["failed"] += 1
-                    mark_retry_attempt(replay_id, format_id, False, error_details, retry_batch_id)
-                    continue
-                
-                # Get the date from uploadtime in metadata
-                upload_time = datetime.fromtimestamp(metadata['uploadtime'])
-                date_str = upload_time.strftime("%Y-%m-%d")
-                format_dir = os.path.join(REPLAYS_DIR, format_id)
-                date_dir = os.path.join(format_dir, date_str)
-                os.makedirs(date_dir, exist_ok=True)
-                
-                # Save the replay data
-                replay_file = os.path.join(date_dir, f"{replay_id}.json")
-                with open(replay_file, 'w') as f:
-                    json.dump(replay_data, f, indent=2)
-                
-                # Mark as recovered
-                stats["recovered"] += 1
-                
-                # Record successful retry in the database
-                mark_retry_attempt(replay_id, format_id, True, 
-                                 f"Successfully recovered on retry - saved to {replay_file}", 
-                                 retry_batch_id)
-                
-            except Exception as e:
-                error_msg = str(e)
-                logger.error(f"Error retrying replay {replay_id}: {error_msg}")
-                logger.error(traceback.format_exc())
-                stats["failed"] += 1
-                mark_retry_attempt(replay_id, format_id, False, 
-                                 f"Error: {error_msg}", retry_batch_id)
+                    with time_process(f"Marking failed retry attempt for replay {replay_id}", logging.DEBUG):
+                        mark_retry_attempt(replay_id, format_id, False, 
+                                         f"Error: {error_msg}", retry_batch_id)
         
         # Log progress after each mini-batch
         logger.info(f"Mini-batch retry progress: {stats['recovered']} recovered, "

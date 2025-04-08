@@ -19,6 +19,7 @@ from showdown_replay_etl.tasks.discovery import get_replay_ids
 from showdown_replay_etl.tasks.download import download_replays
 from showdown_replay_etl.tasks.retry import retry_failed_replays
 from showdown_replay_etl.tasks.compaction import compact_daily_replays
+from showdown_replay_etl.timer import enable_detailed_timing
 
 # Define default DAG arguments
 default_args = {
@@ -42,6 +43,7 @@ with DAG(
         'format_id': DEFAULT_FORMAT,
         'max_pages': DEFAULT_MAX_PAGES,
         'ignore_history': False,  # Set to True to force processing all replays for testing
+        'enable_detailed_timing': False,  # Enable detailed timing for process performance analysis
     },
 ) as dag:
     

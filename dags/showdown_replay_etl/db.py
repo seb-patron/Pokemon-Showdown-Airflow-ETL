@@ -829,5 +829,103 @@ def batch_mark_replays_failed(replay_info_list: List[Dict[str, Any]], format_id:
     finally:
         conn.close()
 
+def efficiently_record_replays(replays: List[Dict[str, Any]], format_id: str, batch_id: Optional[str] = None):
+    """
+    Efficiently record replay metadata by combining existence check and insert operations into a single transaction.
+    This significantly reduces database roundtrips compared to checking and inserting replays individually.
+    
+    Args:
+        replays: List of replay data dictionaries, each containing at minimum 'id' and 'uploadtime' fields
+        format_id: The format ID that applies to all replays
+        batch_id: Optional batch identifier for tracking
+        
+    Returns:
+        A tuple of (total_count, new_count) indicating total replays processed and new replays added
+    """
+    if not replays:
+        return 0, 0
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    now = datetime.now().isoformat()
+    
+    try:
+        # Start a transaction
+        cursor.execute("BEGIN TRANSACTION")
+        
+        # Get IDs as a tuple for SQL IN clause
+        replay_ids = tuple(r['id'] for r in replays)
+        
+        # Find existing IDs in one query
+        placeholders = ','.join(['?'] * len(replay_ids))
+        cursor.execute(f"""
+            SELECT replay_id FROM replay_status 
+            WHERE replay_id IN ({placeholders}) 
+            AND format_id = ?
+        """, replay_ids + (format_id,))
+        
+        existing_ids = {row['replay_id'] for row in cursor.fetchall()}
+        
+        # Only insert non-existing replays
+        new_replays = [r for r in replays if r['id'] not in existing_ids]
+        
+        # Bulk insert using executemany for efficiency
+        if new_replays:
+            insert_data = []
+            for replay in new_replays:
+                players = f"{replay.get('p1', '')} vs {replay.get('p2', '')}"
+                additional_info = json.dumps({k: v for k, v in replay.items() 
+                                            if k not in ('id', 'uploadtime', 'p1', 'p2')})
+                
+                insert_data.append((
+                    replay['id'],                # replay_id
+                    format_id,                   # format_id
+                    now,                         # discovered_at
+                    batch_id,                    # discovered_batch
+                    False,                       # is_downloaded
+                    None,                        # downloaded_at
+                    None,                        # downloaded_batch
+                    None,                        # download_details
+                    False,                       # is_compacted
+                    None,                        # compacted_at
+                    None,                        # compacted_batch
+                    None,                        # compacted_details
+                    False,                       # is_retry_attempted
+                    None,                        # retry_at
+                    None,                        # retry_batch
+                    None,                        # retry_details
+                    replay['uploadtime'],        # uploadtime
+                    players,                     # players
+                    additional_info              # additional_info
+                ))
+            
+            cursor.executemany('''
+            INSERT INTO replay_status (
+                replay_id, format_id, 
+                discovered_at, discovered_batch,
+                is_downloaded, downloaded_at, downloaded_batch, download_details,
+                is_compacted, compacted_at, compacted_batch, compacted_details,
+                is_retry_attempted, retry_at, retry_batch, retry_details,
+                uploadtime, players, additional_info
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', insert_data)
+        
+        # Commit the transaction
+        conn.commit()
+        
+        logger.info(f"Efficiently processed {len(replays)} replays, added {len(new_replays)} new entries")
+        return len(replays), len(new_replays)
+        
+    except Exception as e:
+        # Roll back the transaction if there's an error
+        conn.rollback()
+        logger.error(f"Error in efficiently_record_replays: {e}")
+        logger.error(traceback.format_exc())
+        return 0, 0
+        
+    finally:
+        conn.close()
+
 # Initialize the database when the module is imported
 initialize_db() 

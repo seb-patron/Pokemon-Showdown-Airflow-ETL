@@ -10,7 +10,7 @@ This project provides an Apache Airflow DAG for extracting, transforming, and lo
 - Tracks processing in a SQLite database for better reliability
 - Manages failed downloads with automatic retry mechanism
 - Configurable via Airflow UI parameters
-- Modular code structure for better maintainability
+- Clean, modular code structure for better maintainability
 
 ## Setup
 
@@ -91,6 +91,16 @@ Tasks are organized into separate modules based on functionality:
 
 - `tasks/compaction.py`: Tasks related to compacting replays by date
   - `compact_daily_replays`: Compacts all replays for each date into a single file
+
+Each task function is imported directly from its respective module:
+
+```python
+# Import functions directly from task modules
+from showdown_replay_etl.tasks.discovery import get_replay_ids, get_backfill_replay_ids
+from showdown_replay_etl.tasks.download import download_replays
+from showdown_replay_etl.tasks.retry import retry_failed_replays
+from showdown_replay_etl.tasks.compaction import compact_daily_replays
+```
 
 ## Data Analysis
 

@@ -7,4 +7,9 @@ Import the specific functions directly from their respective modules:
 - from showdown_replay_etl.tasks.download import download_replay, download_replays
 - from showdown_replay_etl.tasks.retry import retry_failed_replays
 - from showdown_replay_etl.tasks.compaction import compact_daily_replays
+
+You can also use the timing utility:
+- from showdown_replay_etl.timer import enable_detailed_timing
 """
+
+from showdown_replay_etl.timer import enable_detailed_timing

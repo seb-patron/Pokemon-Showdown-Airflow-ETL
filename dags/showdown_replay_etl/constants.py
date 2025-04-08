@@ -9,8 +9,18 @@ REPLAYS_DIR = os.path.join(BASE_DIR, "replays")
 REPLAY_IDS_DIR = os.path.join(BASE_DIR, "replay_ids")
 COMPACTED_REPLAYS_DIR = os.path.join(BASE_DIR, "compacted_replays")
 
+# Format options
+FORMAT_GEN9_VGC_2024_REG_H = "gen9vgc2024regh"
+FORMAT_GEN9_VGC_2024_REG_G = "gen9vgc2024regg"
+
 # Default format to scrape replays for
-DEFAULT_FORMAT = "gen9vgc2024regh"  # Default format, can be overridden by DAG param
+DEFAULT_FORMAT = FORMAT_GEN9_VGC_2024_REG_H  # Default format, can be overridden by DAG param
+
+# Available format options (for reference)
+AVAILABLE_FORMATS = [
+    FORMAT_GEN9_VGC_2024_REG_H,  # Regulation H (Series 4)
+    FORMAT_GEN9_VGC_2024_REG_G,  # Regulation G (Series 3)
+]
 
 # Default maximum number of pages to fetch (safety to avoid infinite loop)
 DEFAULT_MAX_PAGES = 5
